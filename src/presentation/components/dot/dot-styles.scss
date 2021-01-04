@@ -1,0 +1,19 @@
+@import "../../styles/colors.scss";
+
+.dot {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.success {
+  background-color: $success;
+}
+
+.warning {
+  background-color: $warning;
+}
+.danger {
+  background-color: $danger;
+}

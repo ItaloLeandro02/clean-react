@@ -1,6 +1,7 @@
 import React from 'react'
 import Styles from './login-styles.scss'
 import Spinner from '@/presentation/components/spinner/spinner'
+import Dot from '@/presentation/components/dot/dot'
 
 const Login: React.FC = () => {
   return (
@@ -14,13 +15,13 @@ const Login: React.FC = () => {
         <div className={Styles.inputWrap}>
           <input type="email" name="email" placeholder="Digite seu e-mail"/>
           <span className={Styles.status}>
-            <span className={Styles.dotDanger}></span>
+            <Dot className="danger"/>
           </span>
         </div>
         <div className={Styles.inputWrap}>
           <input type="password" name="password" placeholder="Digite sua senha"/>
           <span className={Styles.status}>
-            <span className={Styles.dotDanger}></span>
+            <Dot className="danger"/>
           </span>
         </div>
         <button className={Styles.submit} type="submit">Entrar</button>
