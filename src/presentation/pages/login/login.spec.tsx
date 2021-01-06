@@ -6,10 +6,21 @@ describe('Login Component', () => {
   test('Should start with initial state', () => {
     const { getByTestId } = render(<Login />)
     const errorWrap = getByTestId('error-wrap')
-
     expect(errorWrap.childElementCount).toBe(0)
 
     const submitButton = getByTestId('submit') as HTMLButtonElement
     expect(submitButton.disabled).toBe(true)
+
+    const emailStatus = getByTestId('email-status') as HTMLInputElement
+    expect(emailStatus.title).toBe('Campo obrigatório')
+
+    const dotEmailStatus = getByTestId('dot-email-status')
+    expect(dotEmailStatus.className).toBe('dot danger')
+
+    const passwordStatus = getByTestId('password-status') as HTMLInputElement
+    expect(passwordStatus.title).toBe('Campo obrigatório')
+
+    const dotPasswordStatus = getByTestId('dot-password-status')
+    expect(dotPasswordStatus.className).toBe('dot danger')
   })
 })
