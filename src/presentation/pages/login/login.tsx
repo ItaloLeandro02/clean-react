@@ -17,7 +17,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
     password: '',
     emailError: '',
     passwordError: '',
-    main: ''
+    mainError: ''
   })
 
   useEffect(() => {
