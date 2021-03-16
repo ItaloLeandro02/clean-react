@@ -1,1 +1,2 @@
 [![Build Status](https://travis-ci.com/ItaloLeandro02/clean-react.svg?branch=master)](https://travis-ci.com/ItaloLeandro02/clean-react)
+[![Coverage Status](https://coveralls.io/repos/github/ItaloLeandro02/clean-ts-api/badge.svg?branch=master)](https://coveralls.io/github/ItaloLeandro02/clean-ts-api?branch=master)
