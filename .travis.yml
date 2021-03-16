@@ -2,5 +2,5 @@ language=: node_js
 node_js:
   - 15
 script:
-  - eslit 'src/**'
+  - eslint 'src/**'
   - npm run test:ci
