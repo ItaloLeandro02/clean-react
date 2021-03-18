@@ -1,5 +1,5 @@
 const path = require('path')
-const { DefinePlugin } = require('webpack')
+const { EnvironmentPlugin } = require('webpack')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
@@ -46,8 +46,8 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new DefinePlugin({
-      'process.env.API_URL': 'https://clean-node-ts-0.herokuapp.com/api'
+    new EnvironmentPlugin({
+      API_URL: 'https://clean-node-ts-0.herokuapp.com/api'
     })
   ]
 }
