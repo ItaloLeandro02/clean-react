@@ -10,7 +10,7 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "jsx": "react",
-    "rootDir": "src",
+    "rootDirs": ["src", "tests"],
     "baseUrl": "src",
     "allowJs": true,
     "skipLibCheck": true,
@@ -19,9 +19,13 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@/*": ["*"]
+    }
   },
   "include": [
-    "src"
+    "src",
+    "tests"
   ]
 }
