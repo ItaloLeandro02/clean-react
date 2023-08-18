@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.8",
     "eslint-config-standard-with-typescript": "^37.0.0",
