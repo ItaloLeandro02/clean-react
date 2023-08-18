@@ -17,7 +17,7 @@ const makeSut = (url: string = faker.internet.url()): SutTypes => {
 }
 
 describe('RemoteAuthentication', () => {
-  test('Should call HttpClient with correct URL', async () => {
+  test('Should call HttpPostClient with correct URL', async () => {
     const url = faker.internet.url()
     const { httpPostClientSpy, sut } = makeSut(url)
     await sut.auth()
