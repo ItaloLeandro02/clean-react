@@ -11,7 +11,7 @@ const jestConfig: JestConfigWithTsJest = {
     '<rootDir>/tests/**/*.{ts,tsx}'
   ],
   coverageDirectory: 'coverage',
-  testEnvironment: 'node',
+  testEnvironment: 'jest-environment-jsdom',
   modulePaths: [compilerOptions.baseUrl],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
 }
