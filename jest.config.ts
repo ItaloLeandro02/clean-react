@@ -8,12 +8,16 @@ const jestConfig: JestConfigWithTsJest = {
     '<rootDir>/tests'
   ],
   collectCoverageFrom: [
-    '<rootDir>/tests/**/*.{ts,tsx}'
+    '<rootDir>/tests/**/*.{ts,tsx}',
+    '!**/*.d.ts'
   ],
   coverageDirectory: 'coverage',
   testEnvironment: 'jest-environment-jsdom',
   modulePaths: [compilerOptions.baseUrl],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
+  moduleNameMapper: {
+    ...pathsToModuleNameMapper(compilerOptions.paths),
+    '\\.scss$': 'identity-obj-proxy'
+  },
 }
 
 export default jestConfig
