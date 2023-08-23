@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { memo } from 'react'
 import Styles from './login-header-styles.scss'
 import { Logo } from '../logo/logo'
 
-export const LoginHeader: React.FC = () => {
+const LoginHeader: React.FC = () => {
   return (
     <header className={Styles.header}>
       <Logo />
@@ -10,3 +10,5 @@ export const LoginHeader: React.FC = () => {
     </header>
   )
 }
+
+export default memo(LoginHeader)
