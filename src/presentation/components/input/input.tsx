@@ -8,13 +8,18 @@ HTMLInputElement
 > & { name?: string }
 
 const Input: React.FC<Props> = (props: Props) => {
-  const { state } = useContext(Context)
+  const { state, setState } = useContext(Context)
   const error = state[`${props.name}Error`]
   const getTitle = (): string => error
   const getStatus = (): string => '🔴'
+  const handleChange = (event: React.FormEvent<HTMLInputElement>): void => setState({
+    ...state,
+    [event.currentTarget.name]: event.currentTarget.value
+  })
+
   return (
     <div className={Styles.inputWrap}>
-      <input {...props} />
+      <input {...props} data-testid={props.name} onChange={handleChange} />
       <span data-testid={`${props.name}-status`} title={getTitle()} className={Styles.status}>{getStatus()}</span>
     </div>
   )
