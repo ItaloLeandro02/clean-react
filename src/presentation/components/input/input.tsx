@@ -8,8 +8,8 @@ HTMLInputElement
 > & { name?: string }
 
 const Input: React.FC<Props> = (props: Props) => {
-  const { errorState } = useContext(Context)
-  const error = errorState[props.name]
+  const { state } = useContext(Context)
+  const error = state[`${props.name}Error`]
   const getTitle = (): string => error
   const getStatus = (): string => '🔴'
   return (
