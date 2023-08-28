@@ -1,14 +1,30 @@
 import React from 'react'
-import { type RenderResult, render } from '@testing-library/react'
+import { type RenderResult, render, fireEvent } from '@testing-library/react'
+import { faker } from '@faker-js/faker'
 import { Login } from '@/presentation/pages'
+import { type Validation } from '@/presentation/protocols/validation'
+
+class ValidationSpy implements Validation {
+  errorMessage: ''
+  input: object
+
+  validate (input: object): string {
+    this.input = input
+    return this.errorMessage
+  }
+}
 
 type SutTypes = {
   sut: RenderResult
+  validationSpy: ValidationSpy
 }
+
 const makeSut = (): SutTypes => {
-  const sut = render(<Login />)
+  const validationSpy = new ValidationSpy()
+  const sut = render(<Login validation={validationSpy} />)
   return {
-    sut
+    sut,
+    validationSpy
   }
 }
 
@@ -25,5 +41,13 @@ describe('Login Component', () => {
     const passwordStatus = sut.getByTestId('password-status')
     expect(passwordStatus.title).toBe('Campo obrigatório')
     expect(passwordStatus.textContent).toBe('🔴')
+  })
+
+  test('Should call Validation with correct email', () => {
+    const { sut, validationSpy } = makeSut()
+    const emailInput = sut.getByTestId('email')
+    const email = faker.internet.email()
+    fireEvent.change(emailInput, { target: { value: email } })
+    expect(validationSpy.input).toEqual({ email })
   })
 })
