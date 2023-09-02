@@ -1,18 +1,8 @@
 import React from 'react'
-import { type RenderResult, render, fireEvent } from '@testing-library/react'
+import { type RenderResult, render, fireEvent, cleanup } from '@testing-library/react'
 import { faker } from '@faker-js/faker'
 import { Login } from '@/presentation/pages'
-import { type Validation } from '@/presentation/protocols/validation'
-
-class ValidationSpy implements Validation {
-  errorMessage: ''
-  input: object
-
-  validate (input: object): string {
-    this.input = input
-    return this.errorMessage
-  }
-}
+import { ValidationSpy } from '@/presentation/test'
 
 type SutTypes = {
   sut: RenderResult
@@ -29,6 +19,8 @@ const makeSut = (): SutTypes => {
 }
 
 describe('Login Component', () => {
+  afterEach(cleanup)
+
   test('Should start with initial state', () => {
     const { sut } = makeSut()
     const errorWrap = sut.getByTestId('error-wrap')
