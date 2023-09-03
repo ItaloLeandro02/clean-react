@@ -10,8 +10,8 @@ HTMLInputElement
 const Input: React.FC<Props> = (props: Props) => {
   const { state, setState } = useContext(Context)
   const error = state[`${props.name}Error`]
-  const getTitle = (): string => error
-  const getStatus = (): string => '🔴'
+  const getTitle = (): string => error || 'Tudo certo!'
+  const getStatus = (): string => error ? '🔴' : '🟢'
   const handleChange = (event: React.FormEvent<HTMLInputElement>): void => setState({
     ...state,
     [event.currentTarget.name]: event.currentTarget.value
