@@ -1,7 +1,9 @@
 import React from 'react'
 import { type RenderResult, render, fireEvent, cleanup, waitFor } from '@testing-library/react'
-import 'jest-localstorage-mock'
+import { type RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { faker } from '@faker-js/faker'
+import { enableFetchMocks, disableFetchMocks } from 'jest-fetch-mock'
+import 'jest-localstorage-mock'
 import { Login } from '@/presentation/pages'
 import { ValidationStub, AuthenticationSpy } from '@/presentation/test'
 import { InvalidCredentialsError } from '@/domain/errors'
@@ -19,7 +21,20 @@ const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   const authenticationSpy = new AuthenticationSpy()
   validationStub.errorMessage = params?.validationError
-  const sut = render(<Login validation={validationStub} authentication={authenticationSpy} />)
+  const routes: RouteObject[] = [
+    {
+      path: '/login',
+      element: <Login validation={validationStub} authentication={authenticationSpy} />
+    }, {
+      path: '/signup',
+      element: <h2>Signup page</h2>
+    }
+  ]
+  const router = createMemoryRouter(routes, {
+    initialEntries: ['/login']
+  })
+  const sut = render(<RouterProvider router={router} />)
+
   return {
     sut,
     authenticationSpy
@@ -53,6 +68,7 @@ describe('Login Component', () => {
   afterEach(cleanup)
   beforeEach(() => {
     localStorage.clear()
+    disableFetchMocks()
   })
 
   test('Should start with initial state', () => {
@@ -150,5 +166,15 @@ describe('Login Component', () => {
     simulateValidSubmit(sut)
     await waitFor(() => sut.getByTestId('form'))
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
+  })
+
+  test('Should go to signup page', async () => {
+    enableFetchMocks()
+    const { sut } = makeSut()
+    const register = sut.getByTestId('signup')
+    fireEvent.click(register)
+    await waitFor(() => {
+      expect(sut.getByRole('heading', { level: 2 }).textContent).toBe('Signup page')
+    })
   })
 })
