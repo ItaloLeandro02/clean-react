@@ -8,9 +8,12 @@ import { Login } from '@/presentation/pages'
 import { ValidationStub, AuthenticationSpy } from '@/presentation/test'
 import { InvalidCredentialsError } from '@/domain/errors'
 
+type Router = ReturnType<typeof createMemoryRouter>
+
 type SutTypes = {
   sut: RenderResult
   authenticationSpy: AuthenticationSpy
+  router: Router
 }
 
 type SutParams = {
@@ -31,13 +34,15 @@ const makeSut = (params?: SutParams): SutTypes => {
     }
   ]
   const router = createMemoryRouter(routes, {
-    initialEntries: ['/login']
+    initialEntries: ['/login'],
+    initialIndex: 0
   })
   const sut = render(<RouterProvider router={router} />)
 
   return {
     sut,
-    authenticationSpy
+    authenticationSpy,
+    router
   }
 }
 
@@ -170,11 +175,12 @@ describe('Login Component', () => {
 
   test('Should go to signup page', async () => {
     enableFetchMocks()
-    const { sut } = makeSut()
-    const register = sut.getByTestId('signup')
-    fireEvent.click(register)
+    const { sut, router } = makeSut()
+    expect(router.state.location.pathname).toBe('/login')
+    fireEvent.click(sut.getByTestId('signup'))
     await waitFor(() => {
-      expect(sut.getByRole('heading', { level: 2 }).textContent).toBe('Signup page')
+      expect(router.state.location.pathname).toBe('/signup')
+      expect(router.routes).toHaveLength(2)
     })
   })
 })
