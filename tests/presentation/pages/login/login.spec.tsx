@@ -26,9 +26,14 @@ const makeSut = (params?: SutParams): SutTypes => {
   validationStub.errorMessage = params?.validationError
   const routes: RouteObject[] = [
     {
+      path: '/',
+      element: <h2>Initial page</h2>
+    },
+    {
       path: '/login',
       element: <Login validation={validationStub} authentication={authenticationSpy} />
-    }, {
+    },
+    {
       path: '/signup',
       element: <h2>Signup page</h2>
     }
@@ -121,28 +126,30 @@ describe('Login Component', () => {
     expect(submitButton.disabled).toBeFalsy()
   })
 
-  test('Should show spinner on submit', () => {
+  test('Should show spinner on submit', async () => {
     const { sut } = makeSut()
     simulateValidSubmit(sut)
-    const spinner = sut.getByTestId('spinner')
+    const spinner = await sut.findByTestId('spinner')
     expect(spinner).toBeTruthy()
   })
 
-  test('Should call Authentication with correct values', () => {
+  test('Should call Authentication with correct values', async () => {
     const { sut, authenticationSpy } = makeSut()
     const email = faker.internet.email()
     const password = faker.internet.password()
     simulateValidSubmit(sut, email, password)
+    await sut.findByTestId('form')
     expect(authenticationSpy.params).toEqual({
       email,
       password
     })
   })
 
-  test('Should call Authentication only once', () => {
+  test('Should call Authentication only once', async () => {
     const { sut, authenticationSpy } = makeSut()
     simulateValidSubmit(sut)
     simulateValidSubmit(sut)
+    await sut.findByTestId('form')
     expect(authenticationSpy.callsCount).toBe(1)
   })
 
@@ -167,10 +174,12 @@ describe('Login Component', () => {
   })
 
   test('Should add accessToken to localStorage on success', async () => {
-    const { sut, authenticationSpy } = makeSut()
+    const { sut, authenticationSpy, router } = makeSut()
     simulateValidSubmit(sut)
     await waitFor(() => sut.getByTestId('form'))
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
+    expect(router.state.location.pathname).toBe('/')
+    expect(router.state.historyAction).toBe('REPLACE')
   })
 
   test('Should go to signup page', async () => {
@@ -180,7 +189,7 @@ describe('Login Component', () => {
     fireEvent.click(sut.getByTestId('signup'))
     await waitFor(() => {
       expect(router.state.location.pathname).toBe('/signup')
-      expect(router.routes).toHaveLength(2)
+      expect(router.state.historyAction).toBe('PUSH')
     })
   })
 })
