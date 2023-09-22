@@ -1,5 +1,5 @@
 import React from 'react'
-import { type RenderResult, render, fireEvent, cleanup, waitFor } from '@testing-library/react'
+import { type RenderResult, render, fireEvent, cleanup } from '@testing-library/react'
 import { type RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { faker } from '@faker-js/faker'
 import { enableFetchMocks, disableFetchMocks } from 'jest-fetch-mock'
@@ -166,8 +166,7 @@ describe('Login Component', () => {
     const error = new InvalidCredentialsError()
     jest.spyOn(authenticationSpy, 'auth').mockRejectedValueOnce(error)
     simulateValidSubmit(sut)
-    const errorWrap = sut.getByTestId('error-wrap')
-    await waitFor(() => errorWrap)
+    const errorWrap = await sut.findByTestId('error-wrap')
     const mainError = sut.getByTestId('main-error')
     expect(mainError.textContent).toBe(error.message)
     expect(errorWrap.childElementCount).toBe(1)
@@ -176,20 +175,18 @@ describe('Login Component', () => {
   test('Should add accessToken to localStorage on success', async () => {
     const { sut, authenticationSpy, router } = makeSut()
     simulateValidSubmit(sut)
-    await waitFor(() => sut.getByTestId('form'))
+    await sut.findByTestId('form')
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
     expect(router.state.location.pathname).toBe('/')
     expect(router.state.historyAction).toBe('REPLACE')
   })
 
-  test('Should go to signup page', async () => {
+  test('Should go to signup page', () => {
     enableFetchMocks()
     const { sut, router } = makeSut()
     expect(router.state.location.pathname).toBe('/login')
     fireEvent.click(sut.getByTestId('signup'))
-    await waitFor(() => {
-      expect(router.state.location.pathname).toBe('/signup')
-      expect(router.state.historyAction).toBe('PUSH')
-    })
+    expect(router.state.location.pathname).toBe('/signup')
+    expect(router.state.historyAction).toBe('PUSH')
   })
 })
