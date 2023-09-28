@@ -10,4 +10,10 @@ describe('RequiredFieldValidation', () => {
     const error = sut.validate('')
     expect(error).toEqual(new RequiredFieldValidationError())
   })
+
+  test('Should return false if field is not empty', () => {
+    const sut = makeSut()
+    const error = sut.validate(faker.word.noun())
+    expect(error).toBeFalsy()
+  })
 })
