@@ -9,4 +9,10 @@ describe('RegexEmailValidator', () => {
     const result = sut.validate(faker.word.adjective())
     expect(result).toBeFalsy()
   })
+
+  test('Should return truthy if email is valid', () => {
+    const sut = makeSut()
+    const result = sut.validate(faker.internet.email())
+    expect(result).toBeTruthy()
+  })
 })
