@@ -31,4 +31,16 @@ describe('ValidationBuilder', () => {
       new MinLengthValidation(fieldName, length)
     ])
   })
+
+  test('Should return a list of validations', () => {
+    const fieldName = faker.database.column()
+    const emailValidatorSpy = new EmailValidatorSpy()
+    const length = faker.number.int()
+    const validations = sut.field(fieldName).required().email(emailValidatorSpy).min(length).build()
+    expect(validations).toEqual([
+      new RequiredFieldValidation(fieldName),
+      new EmailValidation(fieldName, emailValidatorSpy),
+      new MinLengthValidation(fieldName, length)
+    ])
+  })
 })
