@@ -1,11 +1,11 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { Login } from '@/presentation/pages'
+import { makeLogin } from '@/main/actories/pages/login/login-factory'
 
 const router = createBrowserRouter([
   {
     path: '/login',
-    element: <Login />
+    Component: makeLogin
   }
 ])
 
