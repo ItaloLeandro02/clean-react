@@ -1,4 +1,5 @@
 const path = require('path')
+const { DefinePlugin } = require('webpack')
 
 module.exports = {
   mode: 'development',
@@ -43,5 +44,10 @@ module.exports = {
   externals: {
     react: 'React',
     'react-dom': 'ReactDOM'
-  }
+  },
+  plugins: [
+    new DefinePlugin({
+      'process.env.API_URL': JSON.stringify('http://localhost:5050/api')
+    })
+  ]
 }
