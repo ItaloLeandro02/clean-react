@@ -3,9 +3,8 @@ import { type RenderResult, render, fireEvent, cleanup, waitFor } from '@testing
 import { type RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { faker } from '@faker-js/faker'
 import { enableFetchMocks, disableFetchMocks } from 'jest-fetch-mock'
-import 'jest-localstorage-mock'
 import { Login } from '@/presentation/pages'
-import { ValidationStub, AuthenticationSpy } from '@/presentation/test'
+import { ValidationStub, AuthenticationSpy, SaveAccessTokenMock } from '@/presentation/test'
 import { InvalidCredentialsError } from '@/domain/errors'
 
 type Router = ReturnType<typeof createMemoryRouter>
@@ -13,6 +12,7 @@ type Router = ReturnType<typeof createMemoryRouter>
 type SutTypes = {
   sut: RenderResult
   authenticationSpy: AuthenticationSpy
+  saveAccessTokenMock: SaveAccessTokenMock
   router: Router
 }
 
@@ -23,6 +23,7 @@ type SutParams = {
 const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   const authenticationSpy = new AuthenticationSpy()
+  const saveAccessTokenMock = new SaveAccessTokenMock()
   validationStub.errorMessage = params?.validationError
   const routes: RouteObject[] = [
     {
@@ -31,7 +32,12 @@ const makeSut = (params?: SutParams): SutTypes => {
     },
     {
       path: '/login',
-      element: <Login validation={validationStub} authentication={authenticationSpy} />
+      element:
+        <Login
+          validation={validationStub}
+          authentication={authenticationSpy}
+          saveAccessToken={saveAccessTokenMock}
+        />
     },
     {
       path: '/signup',
@@ -47,6 +53,7 @@ const makeSut = (params?: SutParams): SutTypes => {
   return {
     sut,
     authenticationSpy,
+    saveAccessTokenMock,
     router
   }
 }
@@ -98,7 +105,6 @@ const testButtonIsDisabled = (sut: RenderResult, fieldName: string, isDisabled: 
 describe('Login Component', () => {
   afterEach(cleanup)
   beforeEach(() => {
-    localStorage.clear()
     disableFetchMocks()
   })
 
@@ -183,10 +189,10 @@ describe('Login Component', () => {
     testErrorWrapChildCount(sut, 1)
   })
 
-  test('Should add accessToken to localStorage on success', async () => {
-    const { sut, authenticationSpy, router } = makeSut()
+  test('Should call SaveAccessToken on success', async () => {
+    const { sut, authenticationSpy, router, saveAccessTokenMock } = makeSut()
     await simulateValidSubmit(sut)
-    expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
+    expect(saveAccessTokenMock.accessToken).toBe(authenticationSpy.account.accessToken)
     expect(router.state.location.pathname).toBe('/')
     expect(router.state.historyAction).toBe('REPLACE')
   })
