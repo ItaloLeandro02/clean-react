@@ -174,7 +174,7 @@ describe('Login Component', () => {
     enableFetchMocks()
     const { sut, router } = makeSut()
     expect(router.state.location.pathname).toBe('/login')
-    fireEvent.click(sut.getByTestId('signup'))
+    fireEvent.click(sut.getByTestId('signup-link'))
     expect(router.state.location.pathname).toBe('/signup')
     expect(router.state.historyAction).toBe('PUSH')
   })
