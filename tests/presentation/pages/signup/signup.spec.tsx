@@ -1,13 +1,19 @@
 import React from 'react'
+import { type RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { type RenderResult, render, cleanup, fireEvent, waitFor } from '@testing-library/react'
 import { faker } from '@faker-js/faker'
+import { disableFetchMocks } from 'jest-fetch-mock'
 import { SignUp } from '@/presentation/pages'
-import { AddAccountSpy, Helper, ValidationStub } from '@/presentation/test'
+import { AddAccountSpy, Helper, SaveAccessTokenMock, ValidationStub } from '@/presentation/test'
 import { EmailInUseError } from '@/domain/errors'
+
+type Router = ReturnType<typeof createMemoryRouter>
 
 type SutTypes = {
   sut: RenderResult
   addAccountSpy: AddAccountSpy
+  saveAccessTokenMock: SaveAccessTokenMock
+  router: Router
 }
 
 type SutParams = {
@@ -18,17 +24,33 @@ const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   validationStub.errorMessage = params?.validationError
   const addAccountSpy = new AddAccountSpy()
-
-  const sut = render(
-    <SignUp
-      validation={validationStub}
-      addAccount={addAccountSpy}
-    />
-  )
+  const saveAccessTokenMock = new SaveAccessTokenMock()
+  const routes: RouteObject[] = [
+    {
+      path: '/',
+      element: <h2>Initial page</h2>
+    },
+    {
+      path: '/signup',
+      element:
+        <SignUp
+          validation={validationStub}
+          addAccount={addAccountSpy}
+          saveAccessToken={saveAccessTokenMock}
+        />
+    }
+  ]
+  const router = createMemoryRouter(routes, {
+    initialEntries: ['/signup'],
+    initialIndex: 0
+  })
+  const sut = render(<RouterProvider router={router} />)
 
   return {
     sut,
-    addAccountSpy
+    addAccountSpy,
+    saveAccessTokenMock,
+    router
   }
 }
 
@@ -44,6 +66,9 @@ const simulateValidSubmit = async (sut: RenderResult, name = faker.person.firstN
 
 describe('SignUp Component', () => {
   afterEach(cleanup)
+  beforeEach(() => {
+    disableFetchMocks()
+  })
 
   test('Should start with initial state', () => {
     const validationError = faker.word.words()
@@ -158,5 +183,13 @@ describe('SignUp Component', () => {
     await simulateValidSubmit(sut)
     Helper.testElementText(sut, 'main-error', error.message)
     Helper.testChildCount(sut, 'error-wrap', 1)
+  })
+
+  test('Should call SaveAccessToken on success', async () => {
+    const { sut, addAccountSpy, router, saveAccessTokenMock } = makeSut()
+    await simulateValidSubmit(sut)
+    expect(saveAccessTokenMock.accessToken).toBe(addAccountSpy.account.accessToken)
+    expect(router.state.location.pathname).toBe('/')
+    expect(router.state.historyAction).toBe('REPLACE')
   })
 })
