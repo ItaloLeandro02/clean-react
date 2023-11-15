@@ -2,7 +2,7 @@ import React from 'react'
 import { type RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { type RenderResult, render, cleanup, fireEvent, waitFor } from '@testing-library/react'
 import { faker } from '@faker-js/faker'
-import { disableFetchMocks } from 'jest-fetch-mock'
+import { disableFetchMocks, enableFetchMocks } from 'jest-fetch-mock'
 import { SignUp } from '@/presentation/pages'
 import { AddAccountSpy, Helper, SaveAccessTokenMock, ValidationStub } from '@/presentation/test'
 import { EmailInUseError } from '@/domain/errors'
@@ -38,6 +38,10 @@ const makeSut = (params?: SutParams): SutTypes => {
           addAccount={addAccountSpy}
           saveAccessToken={saveAccessTokenMock}
         />
+    },
+    {
+      path: '/login',
+      element: <h2>Login page</h2>
     }
   ]
   const router = createMemoryRouter(routes, {
@@ -200,5 +204,14 @@ describe('SignUp Component', () => {
     await simulateValidSubmit(sut)
     Helper.testElementText(sut, 'main-error', error.message)
     Helper.testChildCount(sut, 'error-wrap', 1)
+  })
+
+  test('Should go to login page', () => {
+    enableFetchMocks()
+    const { sut, router } = makeSut()
+    expect(router.state.location.pathname).toBe('/signup')
+    fireEvent.click(sut.getByTestId('login-link'))
+    expect(router.state.location.pathname).toBe('/login')
+    expect(router.state.historyAction).toBe('REPLACE')
   })
 })
