@@ -69,10 +69,10 @@ const simulateValidSubmit = async (sut: RenderResult, name = faker.person.firstN
 }
 
 describe('SignUp Component', () => {
-  afterEach(cleanup)
   beforeEach(() => {
     disableFetchMocks()
   })
+  afterEach(cleanup)
 
   test('Should start with initial state', () => {
     const validationError = faker.word.words()

@@ -67,10 +67,10 @@ const simulateValidSubmit = async (sut: RenderResult, email = faker.internet.ema
 }
 
 describe('Login Component', () => {
-  afterEach(cleanup)
   beforeEach(() => {
     disableFetchMocks()
   })
+  afterEach(cleanup)
 
   test('Should start with initial state', () => {
     const validationError = faker.word.words()
