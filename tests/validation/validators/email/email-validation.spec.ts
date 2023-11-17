@@ -22,19 +22,22 @@ describe('EmailValidation', () => {
   test('Should return error if email is invalid', () => {
     const { sut, emailValidatorSpy } = makeSut()
     emailValidatorSpy.result = false
-    const error = sut.validate(faker.word.adjective())
+    const field = faker.database.column()
+    const error = sut.validate({ [field]: faker.word.adjective() })
     expect(error).toEqual(new InvalidFieldValidation(sut.field))
   })
 
   test('Should return falsy if email is valid', () => {
     const { sut } = makeSut()
-    const error = sut.validate(faker.internet.email())
+    const field = faker.database.column()
+    const error = sut.validate({ [field]: faker.internet.email() })
     expect(error).toBeFalsy()
   })
 
   test('Should return falsy if email is empty', () => {
     const { sut } = makeSut()
-    const error = sut.validate('')
+    const field = faker.database.column()
+    const error = sut.validate({ [field]: '' })
     expect(error).toBeFalsy()
   })
 })

@@ -7,8 +7,8 @@ export class EmailValidation implements FieldValidation {
     readonly emailValidator: EmailValidator
   ) {}
 
-  validate (value: string): Error {
-    return this.emailValidator.validate(value)
+  validate (input: object): Error {
+    return this.emailValidator.validate(input[this.field])
       ? null
       : new InvalidFieldValidation(this.field)
   }
