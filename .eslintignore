@@ -6,3 +6,4 @@ public
 webpack.config.js
 sass-module.d.ts
 *.scss
+*.json
