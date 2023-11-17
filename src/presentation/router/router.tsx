@@ -1,7 +1,7 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { makeLogin } from '@/main/factories/pages/login'
-import { SignUp } from '@/presentation/pages'
+import { makeSignUp } from '@/main/factories/pages/signup'
 
 const router = createBrowserRouter([
   {
@@ -10,7 +10,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/signup',
-    Component: SignUp
+    Component: makeSignUp
   }
 ])
 
