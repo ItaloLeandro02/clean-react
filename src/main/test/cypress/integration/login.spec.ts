@@ -68,4 +68,23 @@ describe('Login', () => {
       .getByTestId('main-error').should('contain.text', 'Invalid credentials')
     cy.url().should('eq', `${baseUrl}/login`)
   })
+
+  it('Should save accessToken if valid credentials are provided', () => {
+    cy.intercept('/api/login', {
+      statusCode: 200,
+      body: {
+        accessToken: faker.string.uuid()
+      },
+      delay: 500
+    })
+    cy.getByTestId('email').type(faker.internet.email())
+    cy.getByTestId('password').type(faker.lorem.word(5))
+    cy.getByTestId('submit').click()
+    cy.getByTestId('error-wrap')
+      .getByTestId('spinner').should('exist')
+      .getByTestId('main-error').should('not.exist')
+      .getByTestId('spinner').should('not.exist')
+    cy.url().should('eq', `${baseUrl}/`)
+    cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
+  })
 })
