@@ -54,7 +54,7 @@ describe('Login', () => {
     cy.intercept('/api/login', {
       statusCode: 401,
       body: {
-        message: 'Invalid credentials'
+        message: faker.lorem.words()
       },
       delay: 500
     })
