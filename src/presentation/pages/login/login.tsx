@@ -13,6 +13,7 @@ type Props = {
 }
 
 const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }: Props) => {
+  let isLoading = false
   const navigate = useNavigate()
   const [state, setState] = useState({
     isLoading: false,
@@ -43,12 +44,13 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     try {
-      if (state.isLoading || state.isFormInvalid) {
+      if (isLoading || state.isLoading || state.isFormInvalid) {
         return
       }
+      isLoading = true
       setState({
         ...state,
-        isLoading: true
+        isLoading
       })
       const account = await authentication.auth({
         email: state.email,
@@ -57,9 +59,10 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
       await saveAccessToken.save(account.accessToken)
       navigate('/', { replace: true })
     } catch (error) {
+      isLoading = false
       setState({
         ...state,
-        isLoading: false,
+        isLoading,
         mainError: error.message
       })
     }
