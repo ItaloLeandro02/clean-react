@@ -50,7 +50,26 @@ describe('Login', () => {
       .should('not.have.descendants')
   })
 
-  it('Should present error if invalid credentials are provided', () => {
+  it('Should present UnexpectedError on 400', () => {
+    cy.intercept('/api/login', {
+      statusCode: 400,
+      body: {
+        message: faker.lorem.words()
+      },
+      delay: 500
+    })
+    cy.getByTestId('email').type(faker.internet.email())
+    cy.getByTestId('password').type(faker.lorem.word(5))
+    cy.getByTestId('submit').click()
+    cy.getByTestId('error-wrap')
+      .getByTestId('spinner').should('exist')
+      .getByTestId('main-error').should('not.exist')
+      .getByTestId('spinner').should('not.exist')
+      .getByTestId('main-error').should('contain.text', 'Something went wrong. Try again')
+    cy.url().should('eq', `${baseUrl}/login`)
+  })
+
+  it('Should present InvalidCredentialsError on 401', () => {
     cy.intercept('/api/login', {
       statusCode: 401,
       body: {
