@@ -88,6 +88,25 @@ describe('Login', () => {
     cy.url().should('eq', `${baseUrl}/login`)
   })
 
+  it('Should present UnexpectedError if invalid data is returned', () => {
+    cy.intercept('/api/login', {
+      statusCode: 200,
+      body: {
+        invalidProperty: faker.string.uuid()
+      },
+      delay: 500
+    })
+    cy.getByTestId('email').type(faker.internet.email())
+    cy.getByTestId('password').type(faker.lorem.word(5))
+    cy.getByTestId('submit').click()
+    cy.getByTestId('error-wrap')
+      .getByTestId('spinner').should('exist')
+      .getByTestId('main-error').should('not.exist')
+      .getByTestId('spinner').should('not.exist')
+      .getByTestId('main-error').should('contain.text', 'Something went wrong. Try again')
+    cy.url().should('eq', `${baseUrl}/login`)
+  })
+
   it('Should save accessToken if valid credentials are provided', () => {
     cy.intercept('/api/login', {
       statusCode: 200,
