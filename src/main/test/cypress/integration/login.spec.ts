@@ -118,6 +118,20 @@ describe('Login', () => {
     cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
   })
 
+  it('Should prevent to call submit multiple times', () => {
+    cy.intercept('/api/login', {
+      statusCode: 200,
+      body: {
+        accessToken: faker.string.uuid()
+      }
+    })
+      .as('request')
+    cy.getByTestId('email').type(faker.internet.email())
+    cy.getByTestId('password').type(faker.lorem.word(5))
+    cy.getByTestId('submit').dblclick()
+    cy.get('@request.all').should('have.length', 1)
+  })
+
   it('Should no call submit if form ins invalid', () => {
     cy.intercept('/api/login', {
       statusCode: 200,
