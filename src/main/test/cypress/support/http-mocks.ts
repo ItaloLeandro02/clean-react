@@ -21,6 +21,16 @@ export const mockInvalidCredentialsError = (method: Method, url: RouteMatcher): 
   }).as('request')
 }
 
+export const mockEmailInUseError = (method: Method, url: RouteMatcher): void => {
+  cy.intercept(method, url, {
+    statusCode: 403,
+    body: {
+      error: faker.lorem.words()
+    },
+    delay: 500
+  }).as('request')
+}
+
 export const mockOk = (method: Method, url: RouteMatcher, bodyResponse: object): void => {
   cy.intercept(method, url, {
     statusCode: 200,

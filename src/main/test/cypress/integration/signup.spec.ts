@@ -58,4 +58,11 @@ describe('SignUp', () => {
     FormHelper.testMainError('Something went wrong. Try again')
     FormHelper.testUrl('/signup')
   })
+
+  it('Should present EmailInUseError on 403', () => {
+    Http.mockEmailInUseError()
+    simulateValidSubmit()
+    FormHelper.testMainError('The email is already in use')
+    FormHelper.testUrl('/signup')
+  })
 })
