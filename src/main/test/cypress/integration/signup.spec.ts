@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 import * as FormHelper from '../support/form-helper'
+import * as Http from '../support/signup-mocks'
 
 const populateFields = (): void => {
   cy.getByTestId('name').type(faker.person.fullName())
@@ -7,6 +8,11 @@ const populateFields = (): void => {
   const password = faker.string.alphanumeric(7)
   cy.getByTestId('password').type(password)
   cy.getByTestId('passwordConfirmation').type(password)
+}
+
+const simulateValidSubmit = (): void => {
+  populateFields()
+  cy.getByTestId('submit').click()
 }
 
 describe('SignUp', () => {
@@ -44,5 +50,12 @@ describe('SignUp', () => {
     FormHelper.testInputStatus('passwordConfirmation')
     cy.getByTestId('submit').should('not.have.attr', 'disabled')
     cy.getByTestId('error-wrap').should('not.have.descendants')
+  })
+
+  it('Should present UnexpectedError on 400', () => {
+    Http.mockUnexpectedError()
+    simulateValidSubmit()
+    FormHelper.testMainError('Something went wrong. Try again')
+    FormHelper.testUrl('/signup')
   })
 })
