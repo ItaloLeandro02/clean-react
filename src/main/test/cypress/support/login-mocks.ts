@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import * as Mock from '../support/http-mocks'
+import * as Mock from './http-mocks'
 
 export const mockUnexpectedError = (): void => { Mock.mockUnexpectedError('POST', '/api/login') }
 export const mockInvalidCredentialsError = (): void => { Mock.mockInvalidCredentialsError('POST', '/api/login') }
