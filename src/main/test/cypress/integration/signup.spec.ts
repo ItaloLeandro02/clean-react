@@ -1,6 +1,14 @@
 import { faker } from '@faker-js/faker'
 import * as FormHelper from '../support/form-helper'
 
+const populateFields = (): void => {
+  cy.getByTestId('name').type(faker.person.fullName())
+  cy.getByTestId('email').type(faker.internet.email())
+  const password = faker.string.alphanumeric(7)
+  cy.getByTestId('password').type(password)
+  cy.getByTestId('passwordConfirmation').type(password)
+}
+
 describe('SignUp', () => {
   beforeEach(() => {
     cy.visit('signup')
@@ -25,6 +33,16 @@ describe('SignUp', () => {
     cy.getByTestId('passwordConfirmation').type(faker.lorem.word(3))
     FormHelper.testInputStatus('password', 'Campo password inválido!')
     cy.getByTestId('submit').should('have.attr', 'disabled')
+    cy.getByTestId('error-wrap').should('not.have.descendants')
+  })
+
+  it('Should present valid state if form is valid', () => {
+    populateFields()
+    FormHelper.testInputStatus('name')
+    FormHelper.testInputStatus('email')
+    FormHelper.testInputStatus('password')
+    FormHelper.testInputStatus('passwordConfirmation')
+    cy.getByTestId('submit').should('not.have.attr', 'disabled')
     cy.getByTestId('error-wrap').should('not.have.descendants')
   })
 })
