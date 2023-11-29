@@ -13,6 +13,7 @@ type Props = {
 }
 
 const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Props) => {
+  let isLoading = false
   const navigate = useNavigate()
   const [state, setState] = useState({
     isLoading: false,
@@ -53,12 +54,13 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Pr
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     try {
       event.preventDefault()
-      if (state.isLoading || state.isFormInvalid) {
+      if (isLoading || state.isLoading || state.isFormInvalid) {
         return
       }
+      isLoading = true
       setState({
         ...state,
-        isLoading: true
+        isLoading
       })
       const account = await addAccount.add({
         name: state.name,
@@ -69,9 +71,10 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Pr
       await saveAccessToken.save(account.accessToken)
       navigate('/', { replace: true })
     } catch (error) {
+      isLoading = false
       setState({
         ...state,
-        isLoading: false,
+        isLoading,
         mainError: error.message
       })
     }
