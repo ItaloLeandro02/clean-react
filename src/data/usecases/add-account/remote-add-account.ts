@@ -1,13 +1,12 @@
-import type { HttpPostClient } from '@/data/protocols/http'
-import { HttpStatusCode } from '@/data/protocols/http'
+import { type HttpPostClient, HttpStatusCode } from '@/data/protocols/http'
 import { EmailInUseError, UnexpectedError } from '@/domain/errors'
-import type { AccountModel } from '@/domain/models'
-import type { AddAccount, AddAccountParams } from '@/domain/usecases'
+import { type AccountModel } from '@/domain/models'
+import { type AddAccount, type AddAccountParams } from '@/domain/usecases'
 
 export class RemoteAddAccount implements AddAccount {
   constructor (
     private readonly url: string,
-    private readonly httpPostClient: HttpPostClient<AddAccountParams, AccountModel>
+    private readonly httpPostClient: HttpPostClient<AccountModel>
   ) {}
 
   async add (params: AddAccountParams): Promise<AccountModel> {

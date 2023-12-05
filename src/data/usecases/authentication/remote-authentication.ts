@@ -1,13 +1,12 @@
-import type { HttpPostClient } from '@/data/protocols/http'
-import { HttpStatusCode } from '@/data/protocols/http'
+import { type HttpPostClient, HttpStatusCode } from '@/data/protocols/http'
 import { InvalidCredentialsError, UnexpectedError } from '@/domain/errors'
-import type { AccountModel } from '@/domain/models'
-import type { AuthenticationParams, Authentication } from '@/domain/usecases'
+import { type AccountModel } from '@/domain/models'
+import { type AuthenticationParams, type Authentication } from '@/domain/usecases'
 
 export class RemoteAuthentication implements Authentication {
   constructor (
     private readonly url: string,
-    private readonly httpPostClient: HttpPostClient<AuthenticationParams, AccountModel>
+    private readonly httpPostClient: HttpPostClient<AccountModel>
   ) {}
 
   async auth (params: AuthenticationParams): Promise<AccountModel> {
