@@ -11,7 +11,6 @@ const jestConfig: JestConfigWithTsJest = {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{ts,tsx}',
     '!<rootDir>/src/main/**/*.{ts,tsx}',
-    '!<rootDir>/src/presentation/router/**/*',
     '!<rootDir>/src/**/index.ts',
     '!**/*.d.ts'
   ],
