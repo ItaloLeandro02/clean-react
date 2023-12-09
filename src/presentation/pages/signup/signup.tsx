@@ -3,16 +3,16 @@ import { Link, useNavigate } from 'react-router-dom'
 import Styles from './signup-styles.scss'
 import { Footer, FormStatus, Input, LoginHeader, SubmitButton } from '@/presentation/components'
 import Context from '@/presentation/contexts/form/form-context'
-import { type Validation } from '@/presentation/protocols/validation'
-import { type SaveAccessToken, type AddAccount } from '@/domain/usecases'
+import type { Validation } from '@/presentation/protocols/validation'
+import type { UpdateCurrentAccount, AddAccount } from '@/domain/usecases'
 
 type Props = {
   validation: Validation
   addAccount: AddAccount
-  saveAccessToken: SaveAccessToken
+  updateCurrentAccount: UpdateCurrentAccount
 }
 
-const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Props) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount, updateCurrentAccount }: Props) => {
   let isLoading = false
   const navigate = useNavigate()
   const [state, setState] = useState({
@@ -68,7 +68,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Pr
         password: state.password,
         passwordConfirmation: state.passwordConfirmation
       })
-      await saveAccessToken.save(account.accessToken)
+      await updateCurrentAccount.save(account)
       navigate('/', { replace: true })
     } catch (error) {
       isLoading = false
