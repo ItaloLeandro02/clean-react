@@ -2,6 +2,8 @@ import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { makeLogin } from '@/main/factories/pages/login'
 import { makeSignUp } from '@/main/factories/pages/signup'
+import { setCurrentAccountAdapter } from '@/main/adapters'
+import { ApiContext } from '@/presentation/contexts'
 import { SurveyList } from '@/presentation/pages'
 
 const router = createBrowserRouter([
@@ -21,9 +23,15 @@ const router = createBrowserRouter([
 
 const Router: React.FC = () => {
   return (
-    <React.StrictMode>
-      <RouterProvider router={router} />
-    </React.StrictMode>
+    <ApiContext.Provider
+      value={{
+        setCurrentAccount: setCurrentAccountAdapter
+      }}
+    >
+      <React.StrictMode>
+        <RouterProvider router={router} />
+      </React.StrictMode>
+    </ApiContext.Provider>
   )
 }
 
