@@ -3,6 +3,8 @@ import { cleanup, render } from '@testing-library/react'
 import { type RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { PrivateRoute } from '@/presentation/components'
+import { ApiContext } from '@/presentation/contexts'
+import { mockAccountModel } from '@/domain/test'
 
 type Router = ReturnType<typeof createMemoryRouter>
 
@@ -10,7 +12,7 @@ type SutTypes = {
   router: Router
 }
 
-const makeSut = (): SutTypes => {
+const makeSut = (account = mockAccountModel()): SutTypes => {
   const routes: RouteObject[] = [
     {
       path: '/',
@@ -26,7 +28,9 @@ const makeSut = (): SutTypes => {
     initialIndex: 0
   })
   render(
-    <RouterProvider router={router} />
+    <ApiContext.Provider value={{ getCurrentAccount: () => account }}>
+      <RouterProvider router={router} />
+    </ApiContext.Provider>
   )
 
   return { router }
@@ -39,7 +43,12 @@ describe('PrivateRoute', () => {
   afterEach(cleanup)
 
   test('Should redirect to /login if token is empty', () => {
-    const { router } = makeSut()
+    const { router } = makeSut(null)
     expect(router.state.location.pathname).toBe('/login')
+  })
+
+  test('Should render current component if token is not empty', () => {
+    const { router } = makeSut()
+    expect(router.state.location.pathname).toBe('/')
   })
 })
