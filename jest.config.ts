@@ -18,6 +18,7 @@ const jestConfig: JestConfigWithTsJest = {
     '<rootDir>/node_modules',
     '<rootDir>/src/main/test/cypress',
   ],
+  setupFilesAfterEnv: ['<rootDir>/src/main/config/jest-setup.ts'],
   coverageDirectory: 'coverage',
   testEnvironment: 'jest-environment-jsdom',
   modulePaths: [compilerOptions.baseUrl],
