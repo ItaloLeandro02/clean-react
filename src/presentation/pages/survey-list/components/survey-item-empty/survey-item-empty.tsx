@@ -7,6 +7,7 @@ export const SurveyItemEmpty: React.FC = () => {
       <li className={Styles.SurveyItemEmpty}></li>
       <li className={Styles.SurveyItemEmpty}></li>
       <li className={Styles.SurveyItemEmpty}></li>
+      <li className={Styles.SurveyItemEmpty}></li>
     </>
   )
 }
