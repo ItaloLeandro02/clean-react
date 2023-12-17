@@ -11,11 +11,13 @@ type Props = {
 
 const SurveyList: React.FC<Props> = ({ loadSurveyList }: Props) => {
   const [state, setState] = useState({
-    surveys: [] as SurveyModel[]
+    surveys: [] as SurveyModel[],
+    error: ''
   })
   useEffect(() => {
     loadSurveyList.loadAll()
-      .then(surveys => { setState({ ...state, surveys }) })
+      .then((surveys) => { setState({ ...state, surveys }) })
+      .catch((error) => { setState({ ...state, error: error.message }) })
   }, [])
 
   return (
@@ -23,12 +25,20 @@ const SurveyList: React.FC<Props> = ({ loadSurveyList }: Props) => {
       <Header />
       <div className={Styles.contentWrap}>
         <h2>Enquetes</h2>
-        <ul data-testid="survey-list">
-          { state.surveys.length
-            ? state.surveys.map(survey => <SurveyItem key={survey.id} survey={survey} />)
-            : <SurveyItemEmpty />
-          }
-        </ul>
+        { state.error
+          ? <>
+            <div className={Styles.errorWrap}>
+              <span data-testid="error">{state.error}</span>
+              <button>Reload</button>
+            </div>
+          </>
+          : <ul data-testid="survey-list">
+            { state.surveys.length
+              ? state.surveys.map(survey => <SurveyItem key={survey.id} survey={survey} />)
+              : <SurveyItemEmpty />
+            }
+          </ul>
+        }
       </div>
       <Footer />
     </div>
