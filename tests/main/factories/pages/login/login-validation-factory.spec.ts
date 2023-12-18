@@ -1,4 +1,4 @@
-import { makeLoginValidation } from '@/main/factories/pages/login'
+import { makeLoginValidation } from '@/main/factories/pages'
 import { makeRegexEmailValidator } from '@/main/factories/validators/email'
 import { ValidationBuilder as Builder, ValidationComposite } from '@/validation/validators'
 

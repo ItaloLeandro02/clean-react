@@ -1,10 +1,8 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { makeLogin } from '@/main/factories/pages/login'
-import { makeSignUp } from '@/main/factories/pages/signup'
+import { makeLogin, makeSignUp, makeSurveyList } from '@/main/factories/pages'
 import { getCurrentAccountAdapter, setCurrentAccountAdapter } from '@/main/adapters'
 import { ApiContext } from '@/presentation/contexts'
-import { SurveyList } from '@/presentation/pages'
 import { PrivateRoute } from '@/presentation/components'
 
 const router = createBrowserRouter([
@@ -22,7 +20,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'survey-list',
-        Component: SurveyList
+        Component: makeSurveyList
       }
     ]
   }
