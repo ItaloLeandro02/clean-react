@@ -5,15 +5,16 @@ import { faker } from '@faker-js/faker'
 import { disableFetchMocks, enableFetchMocks } from 'jest-fetch-mock'
 import { SignUp } from '@/presentation/pages'
 import { ApiContext } from '@/presentation/contexts'
-import { AddAccountSpy, Helper, ValidationStub } from '@/presentation/test'
+import { Helper, ValidationStub } from '@/presentation/test'
 import { EmailInUseError } from '@/domain/errors'
-import { type AccountModel } from '@/domain/models'
+import { type AddAccount } from '@/domain/usecases'
+import { AddAccountSpy } from '@/domain/test'
 
 type Router = ReturnType<typeof createMemoryRouter>
 
 type SutTypes = {
   addAccountSpy: AddAccountSpy
-  setCurrentAccountMock: (account: AccountModel) => void
+  setCurrentAccountMock: (account: AddAccount.Model) => void
   router: Router
 }
 
