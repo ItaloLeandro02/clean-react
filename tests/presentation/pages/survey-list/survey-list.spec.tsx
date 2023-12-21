@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { type RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { SurveyList } from '@/presentation/pages'
+import { ApiContext } from '@/presentation/contexts'
 import { UnexpectedError } from '@/domain/errors'
 import { LoadSurveyListSpy } from '@/domain/test'
 
@@ -9,7 +11,22 @@ type SutTypes = {
 }
 
 const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
-  render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
+  const routes: RouteObject[] = [{
+    path: '/',
+    element: <SurveyList loadSurveyList={loadSurveyListSpy} />
+  }, {
+    path: '/login',
+    element: <h2>Login</h2>
+  }]
+  const router = createMemoryRouter(routes, {
+    initialEntries: ['/'],
+    initialIndex: 0
+  })
+  render(
+      <ApiContext.Provider value={{ setCurrentAccount: jest.fn() }}>
+        <RouterProvider router={router} />
+      </ApiContext.Provider>
+  )
   return { loadSurveyListSpy }
 }
 
