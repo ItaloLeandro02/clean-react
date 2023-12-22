@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     Component: PrivateRoute,
     children: [
       {
-        path: 'survey-list',
+        path: '',
         Component: makeSurveyList
       }
     ]
