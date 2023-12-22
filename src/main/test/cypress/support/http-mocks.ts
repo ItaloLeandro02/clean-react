@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { type Method, type RouteMatcher } from 'cypress/types/net-stubbing'
 
-export const mockUnexpectedError = (method: Method, url: RouteMatcher): void => {
+export const mockServerError = (method: Method, url: RouteMatcher): void => {
   cy.intercept(method, url, {
     statusCode: faker.helpers.arrayElement([400, 404, 500]),
     body: {
@@ -11,7 +11,7 @@ export const mockUnexpectedError = (method: Method, url: RouteMatcher): void => 
   }).as('request')
 }
 
-export const mockInvalidCredentialsError = (method: Method, url: RouteMatcher): void => {
+export const mockUnauthorizedError = (method: Method, url: RouteMatcher): void => {
   cy.intercept(method, url, {
     statusCode: 401,
     body: {
@@ -21,7 +21,7 @@ export const mockInvalidCredentialsError = (method: Method, url: RouteMatcher): 
   }).as('request')
 }
 
-export const mockEmailInUseError = (method: Method, url: RouteMatcher): void => {
+export const mockForbiddenError = (method: Method, url: RouteMatcher): void => {
   cy.intercept(method, url, {
     statusCode: 403,
     body: {
