@@ -1,13 +1,15 @@
 import { makeLoginValidation } from '@/main/factories/pages'
 import { makeRegexEmailValidator } from '@/main/factories/validators/email'
-import { ValidationBuilder as Builder, ValidationComposite } from '@/validation/validators'
+import { EmailValidation, MinLengthValidation, RequiredFieldValidation, ValidationComposite } from '@/validation/validators'
 
 describe('LoginValidationFactory', () => {
   test('Should make ValidationComposite with correct values', () => {
     const composite = makeLoginValidation()
     expect(composite).toEqual(ValidationComposite.build([
-      ...Builder.field('email').required().email(makeRegexEmailValidator()).build(),
-      ...Builder.field('password').required().min(5).build()
+      new RequiredFieldValidation('email'),
+      new EmailValidation('email', makeRegexEmailValidator()),
+      new RequiredFieldValidation('password'),
+      new MinLengthValidation('password', 5)
     ]))
   })
 })
