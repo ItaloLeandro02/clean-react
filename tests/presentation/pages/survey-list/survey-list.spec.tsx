@@ -1,13 +1,19 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { type RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
+
 import { SurveyList } from '@/presentation/pages'
 import { ApiContext } from '@/presentation/contexts'
-import { UnexpectedError } from '@/domain/errors'
+import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
+import { type AccountModel } from '@/domain/models'
 import { LoadSurveyListSpy, mockAccountModel } from '@/domain/test'
+import { disableFetchMocks } from 'jest-fetch-mock'
+type Router = ReturnType<typeof createMemoryRouter>
 
 type SutTypes = {
   loadSurveyListSpy: LoadSurveyListSpy
+  setCurrentAccountMock: (account: AccountModel) => void
+  router: Router
 }
 
 const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
@@ -22,15 +28,24 @@ const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
     initialEntries: ['/'],
     initialIndex: 0
   })
+  const setCurrentAccountMock = jest.fn()
   render(
-      <ApiContext.Provider value={{ setCurrentAccount: jest.fn(), getCurrentAccount: () => mockAccountModel() }}>
+      <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }}>
         <RouterProvider router={router} />
       </ApiContext.Provider>
   )
-  return { loadSurveyListSpy }
+  return {
+    loadSurveyListSpy,
+    router,
+    setCurrentAccountMock
+  }
 }
 
 describe('SurveyList Component', () => {
+  beforeEach(() => {
+    disableFetchMocks()
+  })
+
   test('Should present 4 empty items on start', async () => {
     makeSut()
     const surveyList = screen.getByTestId('survey-list')
@@ -55,7 +70,7 @@ describe('SurveyList Component', () => {
     })
   })
 
-  test('Should render error on failure', async () => {
+  test('Should render error on UnexpectedError', async () => {
     const loadSurveyListSpy = new LoadSurveyListSpy()
     const error = new UnexpectedError()
     jest.spyOn(loadSurveyListSpy, 'loadAll').mockRejectedValueOnce(error)
@@ -63,6 +78,17 @@ describe('SurveyList Component', () => {
     await waitFor(() => {
       expect(screen.queryByTestId('survey-list')).not.toBeInTheDocument()
       expect(screen.getByTestId('error')).toHaveTextContent(error.message)
+    })
+  })
+
+  test('Should logout on AccessDeniedError', async () => {
+    const loadSurveyListSpy = new LoadSurveyListSpy()
+    jest.spyOn(loadSurveyListSpy, 'loadAll').mockRejectedValueOnce(new AccessDeniedError())
+    const { router, setCurrentAccountMock } = makeSut(loadSurveyListSpy)
+    await waitFor(() => {
+      expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
+      expect(router.state.location.pathname).toBe('/login')
+      expect(router.state.historyAction).toBe('REPLACE')
     })
   })
 
