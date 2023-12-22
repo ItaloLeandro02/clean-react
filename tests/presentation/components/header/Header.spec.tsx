@@ -5,6 +5,7 @@ import { disableFetchMocks } from 'jest-fetch-mock'
 import { Header } from '@/presentation/components'
 import { ApiContext } from '@/presentation/contexts'
 import { type AccountModel } from '@/domain/models'
+import { mockAccountModel } from '@/domain/test'
 
 type Router = ReturnType<typeof createMemoryRouter>
 
@@ -13,7 +14,7 @@ type SutTypes = {
   router: Router
 }
 
-const makeSut = (): SutTypes => {
+const makeSut = (account = mockAccountModel()): SutTypes => {
   const setCurrentAccountMock = jest.fn()
   const routes: RouteObject[] = [{
     path: '/',
@@ -29,7 +30,8 @@ const makeSut = (): SutTypes => {
   render(
     <ApiContext.Provider
       value={{
-        setCurrentAccount: setCurrentAccountMock
+        setCurrentAccount: setCurrentAccountMock,
+        getCurrentAccount: () => account
       }}
     >
       <RouterProvider router={router} />
@@ -53,5 +55,11 @@ describe('Header Component', () => {
     expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
     expect(router.state.location.pathname).toBe('/login')
     expect(router.state.historyAction).toBe('REPLACE')
+  })
+
+  test('Should render username correctly', () => {
+    const account = mockAccountModel()
+    makeSut(account)
+    expect(screen.getByTestId('username')).toHaveTextContent(account.name)
   })
 })
