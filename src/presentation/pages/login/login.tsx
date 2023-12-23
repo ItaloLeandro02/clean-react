@@ -25,21 +25,14 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
     mainError: ''
   })
 
-  useEffect(() => {
-    const formData = {
-      email: state.email,
-      password: state.password
-    }
-    const emailError = validation.validate('email', formData)
-    const passwordError = validation.validate('password', formData)
+  useEffect(() => { validate('email') }, [state.email])
+  useEffect(() => { validate('password') }, [state.password])
 
-    setState({
-      ...state,
-      emailError,
-      passwordError,
-      isFormInvalid: !!emailError || !!passwordError
-    })
-  }, [state.email, state.password])
+  const validate = (field: string): void => {
+    const formData = { email: state.email, password: state.password }
+    setState(old => ({ ...old, [`${field}Error`]: validation.validate(field, formData) }))
+    setState(old => ({ ...old, isFormInvalid: !!old.emailError || !!old.passwordError }))
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
@@ -48,23 +41,13 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
         return
       }
       isLoading = true
-      setState({
-        ...state,
-        isLoading
-      })
-      const account = await authentication.auth({
-        email: state.email,
-        password: state.password
-      })
+      setState({ ...state, isLoading })
+      const account = await authentication.auth({ email: state.email, password: state.password })
       setCurrentAccount(account)
       navigate('/', { replace: true })
     } catch (error) {
       isLoading = false
-      setState({
-        ...state,
-        isLoading,
-        mainError: error.message
-      })
+      setState({ ...state, isLoading, mainError: error.message })
     }
   }
 
