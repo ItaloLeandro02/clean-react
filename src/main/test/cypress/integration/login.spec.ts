@@ -1,13 +1,20 @@
 import { faker } from '@faker-js/faker'
-import * as FormHelper from '../support/form-helper'
-import * as Helper from '../support/helper'
-import * as Http from '../support/login-mocks'
+import * as FormHelper from '../utils/form-helper'
+import * as Helper from '../utils/helper'
+import * as Http from '../utils/http-mocks'
 
+const path = '/api/login'
+const mockUnexpectedError = (): void => { Http.mockServerError('POST', path) }
+const mockInvalidCredentialsError = (): void => { Http.mockUnauthorizedError('POST', path) }
+const mockSuccess = (): void => {
+  cy.fixture('account').then((account) => {
+    Http.mockOk('POST', path, account)
+  })
+}
 const populateFields = (): void => {
   cy.getByTestId('email').type(faker.internet.email())
   cy.getByTestId('password').type(faker.lorem.word(5))
 }
-
 const simulateValidSubmit = (): void => {
   populateFields()
   cy.getByTestId('submit').click()
@@ -43,21 +50,21 @@ describe('Login', () => {
   })
 
   it('Should present UnexpectedError on 400', () => {
-    Http.mockUnexpectedError()
+    mockUnexpectedError()
     simulateValidSubmit()
     FormHelper.testMainError('Something went wrong. Try again')
     Helper.testUrl('/login')
   })
 
   it('Should present InvalidCredentialsError on 401', () => {
-    Http.mockInvalidCredentialsError()
+    mockInvalidCredentialsError()
     simulateValidSubmit()
     FormHelper.testMainError('Invalid credentials')
     Helper.testUrl('/login')
   })
 
   it('Should save accessToken if valid credentials are provided', () => {
-    Http.mockOk()
+    mockSuccess()
     simulateValidSubmit()
     cy.getByTestId('error-wrap').should('not.have.descendants')
     Helper.testUrl('/')
@@ -65,14 +72,14 @@ describe('Login', () => {
   })
 
   it('Should prevent to call submit multiple times', () => {
-    Http.mockOk()
+    mockSuccess()
     populateFields()
     cy.getByTestId('submit').dblclick()
     Helper.testHttpCallsCount(1)
   })
 
   it('Should not call submit if form ins invalid', () => {
-    Http.mockOk()
+    mockSuccess()
     cy.getByTestId('email').type(`${faker.internet.email()}{enter}`)
     Helper.testHttpCallsCount(0)
   })
