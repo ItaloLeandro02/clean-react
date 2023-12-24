@@ -29,6 +29,7 @@ module.exports = merge(common, {
     devMiddleware: {
       writeToDisk: true,
     },
+    port: 8080
   },
   plugins: [
     new DefinePlugin({
