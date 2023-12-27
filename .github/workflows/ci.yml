@@ -1,7 +1,7 @@
 name: Clean React CI
 on:
   push:
-    banches:
+    branches:
       - main
 jobs:
   build:
