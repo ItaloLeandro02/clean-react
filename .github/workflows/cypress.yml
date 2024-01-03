@@ -4,6 +4,10 @@ jobs:
   cypress-run:
     runs-on: ubuntu-22.04
     steps:
+      - name: create env file
+        run: |
+          touch .env
+          echo PORT=${{ secrets.PORT }} >> .env
       - name: Checkout
         uses: actions/checkout@v4
       - name: Cypress run
@@ -11,5 +15,4 @@ jobs:
         with:
           build: npm run build
           start: npm start
-          wait-on: 'http://localhost:3000'
           browser: chrome
