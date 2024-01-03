@@ -7,7 +7,7 @@ jobs:
       - name: create env file
         run: |
           touch .env
-          echo PORT=${{ secrets.PORT }} >> .env
+          echo PORT=8080 >> .env
       - name: Checkout
         uses: actions/checkout@v4
       - name: Cypress run
