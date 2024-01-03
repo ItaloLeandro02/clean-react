@@ -1,4 +1,4 @@
-name: Cypress Run
+name: Cypress tests
 on: push
 jobs:
   cypress-run:
@@ -12,3 +12,5 @@ jobs:
           build: npm run build
           start: npm start
           browser: chrome
+        env:
+          CYPRESS_port: 3000
