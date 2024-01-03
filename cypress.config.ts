@@ -6,6 +6,7 @@ export default defineConfig({
     fixturesFolder: 'src/main/test/cypress/fixtures',
     supportFile: 'src/main/test/cypress/support/commands.js',
     specPattern: 'src/main/test/cypress/integration',
-    experimentalRunAllSpecs: true
+    experimentalRunAllSpecs: true,
+    video: false
   },
 });
