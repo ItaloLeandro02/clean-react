@@ -11,7 +11,7 @@ export class RemoteLoadSurveyResult {
     const httpResponse = await this.httpGetClient.get({ url: this.url })
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok: break
-      case HttpStatusCode.Forbidden: throw new AccessDeniedError()
+      case HttpStatusCode.forbidden: throw new AccessDeniedError()
       default: throw new UnexpectedError()
     }
   }
