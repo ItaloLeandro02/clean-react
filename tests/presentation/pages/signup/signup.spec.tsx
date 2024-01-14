@@ -1,5 +1,5 @@
 import React from 'react'
-import { type RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
+import { RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { render, fireEvent, waitFor, screen } from '@testing-library/react'
 import { faker } from '@faker-js/faker'
 import { disableFetchMocks, enableFetchMocks } from 'jest-fetch-mock'
@@ -7,7 +7,7 @@ import { SignUp } from '@/presentation/pages'
 import { ApiContext } from '@/presentation/contexts'
 import { Helper, ValidationStub } from '@/presentation/test'
 import { EmailInUseError } from '@/domain/errors'
-import { type AddAccount } from '@/domain/usecases'
+import { AddAccount } from '@/domain/usecases'
 import { AddAccountSpy } from '@/domain/test'
 
 type Router = ReturnType<typeof createMemoryRouter>

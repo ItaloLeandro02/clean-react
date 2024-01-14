@@ -1,4 +1,4 @@
-import { type EmailValidator, type FieldValidation } from '@/validation/protocols'
+import { EmailValidator, FieldValidation } from '@/validation/protocols'
 import {
   CompareFieldsValidation,
   EmailValidation,

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import Styles from './styles-list.scss'
 import { SurveyContext, SurveyItem, SurveyItemEmpty } from '@/presentation/pages/survey-list/components'
-import { type LoadSurveyList } from '@/domain/usecases'
+import { LoadSurveyList } from '@/domain/usecases'
 
 export const List: React.FC = () => {
   const { state } = useContext(SurveyContext)

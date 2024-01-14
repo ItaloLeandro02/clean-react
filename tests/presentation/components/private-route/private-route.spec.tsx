@@ -1,6 +1,6 @@
 import React from 'react'
 import { cleanup, render } from '@testing-library/react'
-import { type RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
+import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { PrivateRoute } from '@/presentation/components'
 import { ApiContext } from '@/presentation/contexts'

@@ -1,4 +1,4 @@
-import { type FieldValidation } from '@/validation/protocols'
+import { FieldValidation } from '@/validation/protocols'
 
 export class FieldValidationSpy implements FieldValidation {
   error: Error

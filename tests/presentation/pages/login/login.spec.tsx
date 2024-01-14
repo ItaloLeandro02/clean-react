@@ -1,13 +1,13 @@
 import React from 'react'
 import { render, fireEvent, waitFor, screen } from '@testing-library/react'
-import { type RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
+import { RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { faker } from '@faker-js/faker'
 import { enableFetchMocks, disableFetchMocks } from 'jest-fetch-mock'
 import { Login } from '@/presentation/pages'
 import { ApiContext } from '@/presentation/contexts'
 import { ValidationStub, Helper } from '@/presentation/test'
 import { InvalidCredentialsError } from '@/domain/errors'
-import { type Authentication } from '@/domain/usecases'
+import { Authentication } from '@/domain/usecases'
 import { AuthenticationSpy } from '@/domain/test'
 
 type Router = ReturnType<typeof createMemoryRouter>

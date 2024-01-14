@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { type AddAccount } from '@/domain/usecases'
+import { AddAccount } from '@/domain/usecases'
 import { mockAccountModel } from '@/domain/test'
 
 export const mockAddAccount = (): AddAccount.Params => {

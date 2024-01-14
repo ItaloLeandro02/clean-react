@@ -1,10 +1,10 @@
 import React from 'react'
-import { type RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
+import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { Header } from '@/presentation/components'
 import { ApiContext } from '@/presentation/contexts'
-import { type AccountModel } from '@/domain/models'
+import { AccountModel } from '@/domain/models'
 import { mockAccountModel } from '@/domain/test'
 
 type Router = ReturnType<typeof createMemoryRouter>

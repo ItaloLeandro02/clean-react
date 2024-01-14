@@ -3,7 +3,7 @@ import Styles from './survey-list-styles.scss'
 import { Header, Footer } from '@/presentation/components'
 import { Error, SurveyContext, SurveyListItem } from '@/presentation/pages/survey-list/components'
 import { useErrorHandler } from '@/presentation/components/hooks'
-import { type LoadSurveyList } from '@/domain/usecases'
+import { LoadSurveyList } from '@/domain/usecases'
 
 type Props = {
   loadSurveyList: LoadSurveyList

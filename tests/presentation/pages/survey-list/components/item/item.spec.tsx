@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { SurveyItem } from '@/presentation/pages/survey-list/components'
 import { IconName } from '@/presentation/components'
 import { mockSurveyModel } from '@/domain/test'
-import { type LoadSurveyList } from '@/domain/usecases'
+import { LoadSurveyList } from '@/domain/usecases'
 
 const makeSut = (survey: LoadSurveyList.Model): void => {
   render(<SurveyItem survey={survey} />)

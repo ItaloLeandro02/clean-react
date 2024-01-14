@@ -1,5 +1,5 @@
 import { InvalidFieldValidation } from '@/validation/errors'
-import { type EmailValidator, type FieldValidation } from '@/validation/protocols'
+import { EmailValidator, FieldValidation } from '@/validation/protocols'
 
 export class EmailValidation implements FieldValidation {
   constructor (

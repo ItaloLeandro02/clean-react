@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { type AccountModel } from '@/domain/models'
+import { AccountModel } from '@/domain/models'
 
 type Props = {
   setCurrentAccount?: (account: AccountModel) => void

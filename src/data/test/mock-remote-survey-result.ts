@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { type RemoteLoadSurveyResult } from '@/data/usecases/load-survey-result/remote-load-survey-result'
+import { RemoteLoadSurveyResult } from '@/data/usecases/load-survey-result/remote-load-survey-result'
 
 export const mockRemoteSurveyResultModel = (): RemoteLoadSurveyResult.Model => ({
   question: faker.lorem.words(),

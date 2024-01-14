@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import Styles from './login-styles.scss'
 import { Footer, FormStatus, Input, LoginHeader, SubmitButton } from '@/presentation/components'
 import { FormContext, ApiContext } from '@/presentation/contexts'
-import { type Validation } from '@/presentation/protocols/validation'
-import { type Authentication } from '@/domain/usecases'
+import { Validation } from '@/presentation/protocols/validation'
+import { Authentication } from '@/domain/usecases'
 
 type Props = {
   validation: Validation

@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { type Method, type RouteMatcher } from 'cypress/types/net-stubbing'
+import { Method, RouteMatcher } from 'cypress/types/net-stubbing'
 
 export const mockServerError = (method: Method, url: RouteMatcher): void => {
   cy.intercept(method, url, {

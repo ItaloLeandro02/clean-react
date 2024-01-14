@@ -1,13 +1,13 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { type RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
-
+import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { SurveyList } from '@/presentation/pages'
 import { ApiContext } from '@/presentation/contexts'
 import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
-import { type AccountModel } from '@/domain/models'
+import { AccountModel } from '@/domain/models'
 import { LoadSurveyListSpy, mockAccountModel } from '@/domain/test'
 import { disableFetchMocks } from 'jest-fetch-mock'
+
 type Router = ReturnType<typeof createMemoryRouter>
 
 type SutTypes = {

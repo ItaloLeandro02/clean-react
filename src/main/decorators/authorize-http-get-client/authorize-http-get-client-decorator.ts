@@ -1,5 +1,5 @@
-import { type HttpGetClient, type HttpGetParams, type HttpResponse } from '@/data/protocols/http'
-import { type GetStorage } from '@/data/protocols/cache'
+import { HttpGetClient, HttpGetParams, HttpResponse } from '@/data/protocols/http'
+import { GetStorage } from '@/data/protocols/cache'
 
 export class AuthorizeHttpClientDecorator implements HttpGetClient {
   constructor (
