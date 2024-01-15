@@ -1,14 +1,14 @@
 import React from 'react'
 import FlipMove from 'react-flip-move'
 import Styles from './survey-result-styles.scss'
-import { Footer, Header, Spinner } from '@/presentation/components'
+import { Footer, Header, Loading } from '@/presentation/components'
 
 const SurveyResult: React.FC = () => {
   return (
     <div className={Styles.surveyResultWrap}>
       <Header />
       <div className={Styles.contentWrap}>
-        <h2>Qual é o seu frameword web favorito</h2>
+        <h2>Qual é o seu framework web favorito</h2>
         <FlipMove className={Styles.answersList}>
           <li>
             <img src="https://www.logo.wine/a/logo/React_(web_framework)/React_(web_framework)-Logo.wine.svg" alt="" />
@@ -27,12 +27,7 @@ const SurveyResult: React.FC = () => {
           </li>
         </FlipMove>
         <button>Voltar</button>
-        <div className={Styles.loadingWrap}>
-          <div className={Styles.loading}>
-            <span>Aguarde...</span>
-            <Spinner isNegative />
-          </div>
-        </div>
+        { false && <Loading /> }
       </div>
       <Footer />
     </div>
