@@ -9,8 +9,8 @@ HTMLInputElement
   isNegative?: boolean
 }
 
-const Spinner: React.FC<Props> = (props: Props) => {
-  const negativeClass = props.isNegative ? Styles.negative : ''
+const Spinner: React.FC<Props> = ({ isNegative, ...props }: Props) => {
+  const negativeClass = isNegative ? Styles.negative : ''
   return (
     <div {...props} data-testid="spinner" className={[Styles.spinner, negativeClass, props.className].join(' ')}>
       <div />
