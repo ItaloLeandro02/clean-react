@@ -9,12 +9,14 @@ import {
   Loading
 } from '@/presentation/components'
 import { LoadSurveyResult } from '@/domain/usecases'
+import { useErrorHandler } from '@/presentation/components/hooks'
 
 type Props = {
   loadSurveyResult: LoadSurveyResult
 }
 
 const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
+  const handleError = useErrorHandler((error: Error) => { setState({ ...state, error: error.message }) })
   const [state, setState] = useState({
     isLoading: false,
     error: '',
@@ -27,7 +29,7 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
       .then((surveyResult) => {
         setState({ ...state, surveyResult })
       })
-      .catch()
+      .catch(handleError)
   }, [])
 
   return (
