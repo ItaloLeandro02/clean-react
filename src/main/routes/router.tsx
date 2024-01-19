@@ -1,6 +1,6 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { makeLogin, makeSignUp, makeSurveyList } from '@/main/factories/pages'
+import { makeLogin, makeSignUp, makeSurveyList, makeSurveyResult } from '@/main/factories/pages'
 import { getCurrentAccountAdapter, setCurrentAccountAdapter } from '@/main/adapters'
 import { ApiContext } from '@/presentation/contexts'
 import { PrivateRoute } from '@/presentation/components'
@@ -21,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: '',
         Component: makeSurveyList
+      },
+      {
+        path: 'surveys/:id',
+        Component: makeSurveyResult
       }
     ]
   }
