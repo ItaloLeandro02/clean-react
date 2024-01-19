@@ -1,15 +1,40 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyItem } from '@/presentation/pages/survey-list/components'
 import { IconName } from '@/presentation/components'
 import { mockSurveyModel } from '@/domain/test'
 import { LoadSurveyList } from '@/domain/usecases'
 
-const makeSut = (survey: LoadSurveyList.Model): void => {
-  render(<SurveyItem survey={survey} />)
+type Router = ReturnType<typeof createMemoryRouter>
+type SutTypes = {
+  router: Router
+}
+
+const makeSut = (survey: LoadSurveyList.Model): SutTypes => {
+  const routes: RouteObject[] = [{
+    path: '/',
+    element: <SurveyItem survey={survey} />
+  }, {
+    path: 'surveys/:id',
+    element: <h2>Survey Result</h2>
+  }]
+  const router = createMemoryRouter(routes, {
+    initialEntries: ['/'],
+    initialIndex: 0
+  })
+  render(<RouterProvider router={router} />)
+  return {
+    router
+  }
 }
 
 describe('SurveyItem Component', () => {
+  beforeEach(() => {
+    disableFetchMocks()
+  })
+
   test('Should render with correct values', () => {
     const survey = Object.assign(mockSurveyModel(), {
       didAnswer: true,
@@ -34,5 +59,15 @@ describe('SurveyItem Component', () => {
     expect(screen.getByTestId('day')).toHaveTextContent('03')
     expect(screen.getByTestId('month')).toHaveTextContent('nov')
     expect(screen.getByTestId('year')).toHaveTextContent('2021')
+  })
+
+  test('Should go to SurveyResult', async () => {
+    const survey = mockSurveyModel()
+    const { router } = makeSut(survey)
+    fireEvent.click(screen.queryByTestId('link'))
+    await waitFor(() => {
+      expect(router.state.location.pathname).toBe(`/surveys/${survey.id}`)
+      expect(router.state.historyAction).toBe('PUSH')
+    })
   })
 })
