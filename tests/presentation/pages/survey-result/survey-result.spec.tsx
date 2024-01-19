@@ -1,36 +1,51 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
+import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyResult } from '@/presentation/pages'
 import { ApiContext } from '@/presentation/contexts'
 import { LoadSurveyResultSpy, mockAccountModel, mockSurveyResultModel } from '@/domain/test'
-import { UnexpectedError } from '@/domain/errors'
+import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
+import { AccountModel } from '@/domain/models'
 
+type Router = ReturnType<typeof createMemoryRouter>
 type SutTypes = {
   loadSurveyResultSpy: LoadSurveyResultSpy
+  setCurrentAccountMock: (account: AccountModel) => void
+  router: Router
 }
 
 const makeSut = (loadSurveyResultSpy = new LoadSurveyResultSpy()): SutTypes => {
   const routes: RouteObject[] = [{
     path: '/surveys',
     element: <SurveyResult loadSurveyResult={loadSurveyResultSpy} />
+  }, {
+    path: '/login',
+    element: <h2>Login</h2>
   }]
   const router = createMemoryRouter(routes, {
     initialEntries: ['/surveys'],
     initialIndex: 0
   })
+  const setCurrentAccountMock = jest.fn()
   render(
-    <ApiContext.Provider value={{ setCurrentAccount: jest.fn(), getCurrentAccount: () => mockAccountModel() }}>
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }}>
       <RouterProvider router={router} />
     </ApiContext.Provider>
   )
 
   return {
-    loadSurveyResultSpy
+    loadSurveyResultSpy,
+    router,
+    setCurrentAccountMock
   }
 }
 
 describe('SurveyResult Component', () => {
+  beforeEach(() => {
+    disableFetchMocks()
+  })
+
   test('Should present correct initial state', async () => {
     makeSut()
     const surveyResult = screen.getByTestId('survey-result')
@@ -83,6 +98,17 @@ describe('SurveyResult Component', () => {
       expect(screen.queryByTestId('question')).not.toBeInTheDocument()
       expect(screen.queryByTestId('loading')).not.toBeInTheDocument()
       expect(screen.getByTestId('error')).toHaveTextContent(error.message)
+    })
+  })
+
+  test('Should logout on AccessDeniedError', async () => {
+    const loadSurveyResultSpy = new LoadSurveyResultSpy()
+    jest.spyOn(loadSurveyResultSpy, 'load').mockRejectedValueOnce(new AccessDeniedError())
+    const { router, setCurrentAccountMock } = makeSut(loadSurveyResultSpy)
+    await waitFor(() => {
+      expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
+      expect(router.state.location.pathname).toBe('/login')
+      expect(router.state.historyAction).toBe('REPLACE')
     })
   })
 })
