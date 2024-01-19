@@ -16,12 +16,23 @@ type Props = {
 }
 
 const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
-  const handleError = useErrorHandler((error: Error) => { setState({ ...state, error: error.message }) })
+  const handleError = useErrorHandler((error: Error) => {
+    setState({ ...state, error: error.message })
+  })
   const [state, setState] = useState({
     isLoading: false,
     error: '',
-    surveyResult: null as LoadSurveyResult.Model
+    surveyResult: null as LoadSurveyResult.Model,
+    reload: false
   })
+  const reload = (): void => {
+    setState({
+      isLoading: false,
+      error: '',
+      surveyResult: null as LoadSurveyResult.Model,
+      reload: !state.reload
+    })
+  }
 
   useEffect(() => {
     loadSurveyResult
@@ -30,7 +41,7 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
         setState({ ...state, surveyResult })
       })
       .catch(handleError)
-  }, [])
+  }, [state.reload])
 
   return (
     <div className={Styles.surveyResultWrap}>
@@ -47,7 +58,11 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
             </hgroup>
             <FlipMove data-testid="answers" className={Styles.answersList}>
               {state.surveyResult.answers.map((answer) => (
-                <li data-testid="answer-wrap" key={answer.answer} className={answer.isCurrentAccountAnswer ? Styles.active : ''}>
+                <li
+                  data-testid="answer-wrap"
+                  key={answer.answer}
+                  className={answer.isCurrentAccountAnswer ? Styles.active : ''}
+                >
                   {answer.image && (
                     <img
                       data-testid="image"
@@ -55,8 +70,12 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
                       alt={answer.answer}
                     />
                   )}
-                  <span data-testid="answer" className={Styles.answer}>{answer.answer}</span>
-                  <span data-testid="percent" className={Styles.percent}>{answer.percent}%</span>
+                  <span data-testid="answer" className={Styles.answer}>
+                    {answer.answer}
+                  </span>
+                  <span data-testid="percent" className={Styles.percent}>
+                    {answer.percent}%
+                  </span>
                 </li>
               ))}
             </FlipMove>
@@ -64,7 +83,7 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
           </>
         )}
         {state.isLoading && <Loading />}
-        {state.error && <Error error={state.error} reload={() => {}} />}
+        {state.error && <Error error={state.error} reload={reload} />}
       </div>
       <Footer />
     </div>
