@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyResult } from '@/presentation/pages'
@@ -109,6 +109,16 @@ describe('SurveyResult Component', () => {
       expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
       expect(router.state.location.pathname).toBe('/login')
       expect(router.state.historyAction).toBe('REPLACE')
+    })
+  })
+
+  test('Should call LoadSurveyResult on reload', async () => {
+    const loadSurveyResultSpy = new LoadSurveyResultSpy()
+    jest.spyOn(loadSurveyResultSpy, 'load').mockRejectedValueOnce(new UnexpectedError())
+    makeSut(loadSurveyResultSpy)
+    await waitFor(() => {
+      fireEvent.click(screen.queryByTestId('reload'))
+      expect(loadSurveyResultSpy.callsCount).toBe(1)
     })
   })
 })
