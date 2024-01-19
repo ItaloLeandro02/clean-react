@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import FlipMove from 'react-flip-move'
 import Styles from './survey-result-styles.scss'
 import {
@@ -16,6 +17,7 @@ type Props = {
 }
 
 const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
+  const navigate = useNavigate()
   const handleError = useErrorHandler((error: Error) => {
     setState({ ...state, error: error.message })
   })
@@ -33,6 +35,7 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
       reload: !state.reload
     })
   }
+  const back = (): void => { navigate(-1) }
 
   useEffect(() => {
     loadSurveyResult
@@ -79,7 +82,7 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
                 </li>
               ))}
             </FlipMove>
-            <button>Voltar</button>
+            <button data-testid="back-button" onClick={back}>Voltar</button>
           </>
         )}
         {state.isLoading && <Loading />}
