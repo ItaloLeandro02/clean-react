@@ -19,7 +19,7 @@ const makeSut = (url = faker.internet.url()): SutTypes => {
 }
 
 describe('RemoteLoadSurveyResult', () => {
-  test('Should call HttpClient with correct URL and Method', async () => {
+  test('Should call HttpClient with correct values', async () => {
     const url = faker.internet.url()
     const { sut, httpClientSpy } = makeSut(url)
     httpClientSpy.response = {
