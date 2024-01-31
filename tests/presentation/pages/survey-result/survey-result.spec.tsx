@@ -134,4 +134,14 @@ describe('SurveyResult Component', () => {
       expect(router.state.historyAction).toBe('POP')
     })
   })
+
+  test('Should not present Loading on active answer click', async () => {
+    makeSut()
+    await waitFor(() => screen.getByRole('heading'))
+    const answersWrap = screen.queryAllByTestId('answer-wrap')
+    fireEvent.click(answersWrap[0])
+    await waitFor(() => {
+      expect(screen.queryByTestId('loading')).not.toBeInTheDocument()
+    })
+  })
 })
