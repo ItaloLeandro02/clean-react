@@ -36,14 +36,16 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult, saveSurveyResult }: P
   const onAnswer = (answer: string): void => {
     setState(old => ({ ...old, isLoading: true }))
     saveSurveyResult.save({ answer })
-      .then()
+      .then((surveyResult) => {
+        setState(old => ({ ...old, isLoading: false, surveyResult }))
+      })
       .catch(handleError)
   }
 
   useEffect(() => {
     loadSurveyResult.load()
       .then((surveyResult) => {
-        setState({ ...state, surveyResult })
+        setState(old => ({ ...old, surveyResult }))
       })
       .catch(handleError)
   }, [state.reload])
