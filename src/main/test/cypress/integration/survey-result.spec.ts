@@ -3,7 +3,7 @@ import * as Http from '../utils/http-mocks'
 
 const path = 'api/surveys/**'
 const mockLoadSuccess = (): void => {
-  cy.fixture('survey-result').then((result) => {
+  cy.fixture('load-survey-result').then((result) => {
     Http.mockOk('GET', path, result)
   })
 }
@@ -71,6 +71,11 @@ describe('SurveyResult', () => {
   describe('save', () => {
     const mockUnexpectedError = (): void => { Http.mockServerError('PUT', path) }
     const mockAccessDeniedError = (): void => { Http.mockForbiddenError('PUT', path) }
+    const mockSaveSuccess = (): void => {
+      cy.fixture('save-survey-result').then((result) => {
+        Http.mockOk('PUT', path, result)
+      })
+    }
 
     beforeEach(() => {
       cy.fixture('account').then((account) => {
@@ -90,6 +95,25 @@ describe('SurveyResult', () => {
       mockAccessDeniedError()
       cy.get('li:nth-child(2)').click()
       Helper.testUrl('/login')
+    })
+
+    it('Should present survey result', () => {
+      mockSaveSuccess()
+      cy.get('li:nth-child(2)').click()
+      cy.getByTestId('question').should('have.text', 'Question 2')
+      cy.getByTestId('day').should('have.text', '29')
+      cy.getByTestId('month').should('have.text', 'dez')
+      cy.getByTestId('year').should('have.text', '2022')
+      cy.get('li:nth-child(1)').then((li) => {
+        assert.notExists(li.find('[data-testid=image]'))
+        assert.equal(li.find('[data-testid=answer]').text(), 'other_answer')
+        assert.equal(li.find('[data-testid=percent]').text(), '33%')
+      })
+      cy.get('li:nth-child(2)').then((li) => {
+        assert.equal(li.find('[data-testid=image]').attr('src'), 'other_image')
+        assert.equal(li.find('[data-testid=answer]').text(), 'other_answer_2')
+        assert.equal(li.find('[data-testid=percent]').text(), '67%')
+      })
     })
   })
 })

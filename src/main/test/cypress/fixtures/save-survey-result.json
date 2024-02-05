@@ -1,0 +1,16 @@
+{
+  "question": "Question 2",
+  "date": "2022-12-29T22:19:00",
+  "answers": [{
+    "answer": "other_answer",
+    "count": 1,
+    "percent": 33,
+    "isCurrentAccountAnswer": false
+    }, {
+    "image": "other_image",
+    "answer": "other_answer_2",
+    "count": 2,
+    "percent": 67,
+    "isCurrentAccountAnswer": true
+  }]
+}
