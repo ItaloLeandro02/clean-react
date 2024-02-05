@@ -16,28 +16,28 @@ export class ValidationBuilder {
     return new ValidationBuilder(fieldName, [])
   }
 
-  required (): ValidationBuilder {
+  required (): this {
     this.fieldValidations.push(
       new RequiredFieldValidation(this.fieldName)
     )
     return this
   }
 
-  email (emailValidator: EmailValidator): ValidationBuilder {
+  email (emailValidator: EmailValidator): this {
     this.fieldValidations.push(
       new EmailValidation(this.fieldName, emailValidator)
     )
     return this
   }
 
-  min (length: number): ValidationBuilder {
+  min (length: number): this {
     this.fieldValidations.push(
       new MinLengthValidation(this.fieldName, length)
     )
     return this
   }
 
-  sameAs (fieldToCompare: string): ValidationBuilder {
+  sameAs (fieldToCompare: string): this {
     this.fieldValidations.push(
       new CompareFieldsValidation(this.fieldName, fieldToCompare)
     )
