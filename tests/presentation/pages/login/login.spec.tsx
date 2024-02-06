@@ -1,6 +1,7 @@
 import React from 'react'
 import { render, fireEvent, waitFor, screen } from '@testing-library/react'
 import { RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
+import { RecoilRoot } from 'recoil'
 import { faker } from '@faker-js/faker'
 import { enableFetchMocks, disableFetchMocks } from 'jest-fetch-mock'
 import { Login } from '@/presentation/pages'
@@ -50,13 +51,15 @@ const makeSut = (params?: SutParams): SutTypes => {
     initialIndex: 0
   })
   render(
-    <ApiContext.Provider
-      value={{
-        setCurrentAccount: setCurrentAccountMock
-      }}
-    >
-      <RouterProvider router={router} />
-    </ApiContext.Provider>
+    <RecoilRoot>
+      <ApiContext.Provider
+        value={{
+          setCurrentAccount: setCurrentAccountMock
+        }}
+      >
+        <RouterProvider router={router} />
+      </ApiContext.Provider>
+    </RecoilRoot>
   )
 
   return {
