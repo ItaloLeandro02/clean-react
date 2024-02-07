@@ -1,6 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
+import { RecoilRoot } from 'recoil'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyResult } from '@/presentation/pages'
 import { ApiContext } from '@/presentation/contexts'
@@ -37,9 +38,11 @@ const makeSut = ({ loadSurveyResultSpy = new LoadSurveyResultSpy(), saveSurveyRe
   })
   const setCurrentAccountMock = jest.fn()
   render(
-    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }}>
-      <RouterProvider router={router} />
-    </ApiContext.Provider>
+    <RecoilRoot>
+      <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }}>
+        <RouterProvider router={router} />
+      </ApiContext.Provider>
+    </RecoilRoot>
   )
 
   return {
