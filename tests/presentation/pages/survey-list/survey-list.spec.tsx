@@ -1,12 +1,13 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
+import { RecoilRoot } from 'recoil'
+import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyList } from '@/presentation/pages'
 import { ApiContext } from '@/presentation/contexts'
 import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
 import { AccountModel } from '@/domain/models'
 import { LoadSurveyListSpy, mockAccountModel } from '@/domain/test'
-import { disableFetchMocks } from 'jest-fetch-mock'
 
 type Router = ReturnType<typeof createMemoryRouter>
 
@@ -30,9 +31,11 @@ const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
   })
   const setCurrentAccountMock = jest.fn()
   render(
+    <RecoilRoot>
       <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }}>
         <RouterProvider router={router} />
       </ApiContext.Provider>
+    </RecoilRoot>
   )
   return {
     loadSurveyListSpy,
