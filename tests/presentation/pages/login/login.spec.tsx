@@ -5,11 +5,11 @@ import { RecoilRoot } from 'recoil'
 import { faker } from '@faker-js/faker'
 import { enableFetchMocks, disableFetchMocks } from 'jest-fetch-mock'
 import { Login } from '@/presentation/pages'
-import { ApiContext } from '@/presentation/contexts'
+import { currentAccountState } from '@/presentation/components'
 import { ValidationStub, Helper } from '@/presentation/test'
-import { InvalidCredentialsError } from '@/domain/errors'
 import { Authentication } from '@/domain/usecases'
-import { AuthenticationSpy } from '@/domain/test'
+import { InvalidCredentialsError } from '@/domain/errors'
+import { AuthenticationSpy, mockAccountModel } from '@/domain/test'
 
 type Router = ReturnType<typeof createMemoryRouter>
 
@@ -50,15 +50,10 @@ const makeSut = (params?: SutParams): SutTypes => {
     initialEntries: ['/login'],
     initialIndex: 0
   })
+  const mockedState = { setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }
   render(
-    <RecoilRoot>
-      <ApiContext.Provider
-        value={{
-          setCurrentAccount: setCurrentAccountMock
-        }}
-      >
-        <RouterProvider router={router} />
-      </ApiContext.Provider>
+    <RecoilRoot initializeState={({ set }) => { set(currentAccountState, mockedState) }}>
+      <RouterProvider router={router} />
     </RecoilRoot>
   )
 

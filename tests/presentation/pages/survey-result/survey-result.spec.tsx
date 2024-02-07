@@ -4,10 +4,10 @@ import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-do
 import { RecoilRoot } from 'recoil'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyResult } from '@/presentation/pages'
-import { ApiContext } from '@/presentation/contexts'
-import { LoadSurveyResultSpy, SaveSurveyResultSpy, mockAccountModel, mockSurveyResultModel } from '@/domain/test'
-import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
+import { currentAccountState } from '@/presentation/components'
 import { AccountModel } from '@/domain/models'
+import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
+import { LoadSurveyResultSpy, SaveSurveyResultSpy, mockAccountModel, mockSurveyResultModel } from '@/domain/test'
 
 type Router = ReturnType<typeof createMemoryRouter>
 type SutTypes = {
@@ -37,11 +37,10 @@ const makeSut = ({ loadSurveyResultSpy = new LoadSurveyResultSpy(), saveSurveyRe
     initialIndex: 2
   })
   const setCurrentAccountMock = jest.fn()
+  const mockedState = { setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }
   render(
-    <RecoilRoot>
-      <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }}>
-        <RouterProvider router={router} />
-      </ApiContext.Provider>
+    <RecoilRoot initializeState={({ set }) => { set(currentAccountState, mockedState) }}>
+      <RouterProvider router={router} />
     </RecoilRoot>
   )
 

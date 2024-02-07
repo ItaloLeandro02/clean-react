@@ -1,9 +1,9 @@
 import React from 'react'
 import { cleanup, render } from '@testing-library/react'
 import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
+import { RecoilRoot } from 'recoil'
 import { disableFetchMocks } from 'jest-fetch-mock'
-import { PrivateRoute } from '@/presentation/components'
-import { ApiContext } from '@/presentation/contexts'
+import { PrivateRoute, currentAccountState } from '@/presentation/components'
 import { mockAccountModel } from '@/domain/test'
 
 type Router = ReturnType<typeof createMemoryRouter>
@@ -27,10 +27,11 @@ const makeSut = (account = mockAccountModel()): SutTypes => {
     initialEntries: ['/'],
     initialIndex: 0
   })
+  const mockedState = { setCurrentAccount: jest.fn(), getCurrentAccount: () => account }
   render(
-    <ApiContext.Provider value={{ getCurrentAccount: () => account }}>
+    <RecoilRoot initializeState={({ set }) => { set(currentAccountState, mockedState) }}>
       <RouterProvider router={router} />
-    </ApiContext.Provider>
+    </RecoilRoot>
   )
 
   return { router }
