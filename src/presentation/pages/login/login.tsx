@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil'
 import Styles from './login-styles.scss'
 import { Footer, LoginHeader, currentAccountState } from '@/presentation/components'
 import { FormStatus, Input, loginState, SubmitButton } from '@/presentation/pages/login/components'
@@ -14,19 +14,16 @@ type Props = {
 
 const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
   const navigate = useNavigate()
+  const resetLoginState = useResetRecoilState(loginState)
   const { setCurrentAccount } = useRecoilValue(currentAccountState)
   const [state, setState] = useRecoilState(loginState)
   let isLoading = false
-
-  useEffect(() => { validate('email') }, [state.email])
-  useEffect(() => { validate('password') }, [state.password])
 
   const validate = (field: string): void => {
     const formData = { email: state.email, password: state.password }
     setState(old => ({ ...old, [`${field}Error`]: validation.validate(field, formData) }))
     setState(old => ({ ...old, isFormInvalid: !!old.emailError || !!old.passwordError }))
   }
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     try {
@@ -43,6 +40,10 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
       setState({ ...state, isLoading, mainError: error.message })
     }
   }
+
+  useEffect(() => { resetLoginState() }, [])
+  useEffect(() => { validate('email') }, [state.email])
+  useEffect(() => { validate('password') }, [state.password])
 
   return (
     <div className={Styles.loginWrap}>
