@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil'
 import Styles from './signup-styles.scss'
 import { Footer, LoginHeader, currentAccountState } from '@/presentation/components'
 import { FormStatus, Input, signUpState, SubmitButton } from '@/presentation/pages/signup/components'
@@ -14,21 +14,16 @@ type Props = {
 
 const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
   const navigate = useNavigate()
+  const resetSignUpState = useResetRecoilState(signUpState)
   const { setCurrentAccount } = useRecoilValue(currentAccountState)
   const [state, setState] = useRecoilState(signUpState)
   let isLoading = false
-
-  useEffect(() => { validate('name') }, [state.name])
-  useEffect(() => { validate('email') }, [state.email])
-  useEffect(() => { validate('password') }, [state.password])
-  useEffect(() => { validate('passwordConfirmation') }, [state.passwordConfirmation])
 
   const validate = (field: string): void => {
     const formData = { name: state.name, email: state.email, password: state.password, passwordConfirmation: state.passwordConfirmation }
     setState(old => ({ ...old, [`${field}Error`]: validation.validate(field, formData) }))
     setState(old => ({ ...old, isFormInvalid: !!old.nameError || !!old.emailError || !!old.passwordError || !!old.passwordConfirmationError }))
   }
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     try {
       event.preventDefault()
@@ -57,6 +52,12 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
       })
     }
   }
+
+  useEffect(() => { resetSignUpState() }, [])
+  useEffect(() => { validate('name') }, [state.name])
+  useEffect(() => { validate('email') }, [state.email])
+  useEffect(() => { validate('password') }, [state.password])
+  useEffect(() => { validate('passwordConfirmation') }, [state.passwordConfirmation])
 
   return (
     <div className={Styles.signupWrap}>
