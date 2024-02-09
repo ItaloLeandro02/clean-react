@@ -1,33 +1,28 @@
 import React from 'react'
-import { render, fireEvent, waitFor, screen } from '@testing-library/react'
-import { RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
-import { RecoilRoot } from 'recoil'
+import { fireEvent, waitFor, screen } from '@testing-library/react'
+import { RouteObject, createMemoryRouter } from 'react-router-dom'
 import { faker } from '@faker-js/faker'
 import { enableFetchMocks, disableFetchMocks } from 'jest-fetch-mock'
 import { Login } from '@/presentation/pages'
-import { currentAccountState } from '@/presentation/components'
-import { ValidationStub, Helper } from '@/presentation/test'
+import { ValidationStub, Helper, renderWithMemoryRouter, RouterType } from '@/presentation/test'
 import { Authentication } from '@/domain/usecases'
 import { InvalidCredentialsError } from '@/domain/errors'
-import { AuthenticationSpy, mockAccountModel } from '@/domain/test'
-
-type Router = ReturnType<typeof createMemoryRouter>
+import { AuthenticationSpy } from '@/domain/test'
 
 type SutTypes = {
   authenticationSpy: AuthenticationSpy
   setCurrentAccountMock: (account: Authentication.Model) => void
-  router: Router
+  router: RouterType
 }
-
 type SutParams = {
   validationError: string
 }
+type MakeRouterParams = {
+  validationStub: ValidationStub
+  authenticationSpy: AuthenticationSpy
+}
 
-const makeSut = (params?: SutParams): SutTypes => {
-  const validationStub = new ValidationStub()
-  validationStub.errorMessage = params?.validationError
-  const authenticationSpy = new AuthenticationSpy()
-  const setCurrentAccountMock = jest.fn()
+const makeRouter = ({ validationStub, authenticationSpy }: MakeRouterParams): RouterType => {
   const routes: RouteObject[] = [
     {
       path: '/',
@@ -46,24 +41,23 @@ const makeSut = (params?: SutParams): SutTypes => {
       element: <h2>Signup page</h2>
     }
   ]
-  const router = createMemoryRouter(routes, {
+  return createMemoryRouter(routes, {
     initialEntries: ['/login'],
     initialIndex: 0
   })
-  const mockedState = { setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }
-  render(
-    <RecoilRoot initializeState={({ set }) => { set(currentAccountState, mockedState) }}>
-      <RouterProvider router={router} />
-    </RecoilRoot>
-  )
-
+}
+const makeSut = (params?: SutParams): SutTypes => {
+  const validationStub = new ValidationStub()
+  validationStub.errorMessage = params?.validationError
+  const authenticationSpy = new AuthenticationSpy()
+  const router = makeRouter({ validationStub, authenticationSpy })
+  const { setCurrentAccountMock } = renderWithMemoryRouter({ router })
   return {
     authenticationSpy,
     setCurrentAccountMock,
     router
   }
 }
-
 const simulateValidSubmit = async (email = faker.internet.email(), password = faker.internet.password()): Promise<void> => {
   Helper.populateField('email', email)
   Helper.populateField('password', password)

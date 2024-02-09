@@ -1,27 +1,29 @@
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
-import { RecoilRoot } from 'recoil'
+import { fireEvent, screen, waitFor } from '@testing-library/react'
+import { RouteObject, createMemoryRouter } from 'react-router-dom'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyResult } from '@/presentation/pages'
-import { currentAccountState } from '@/presentation/components'
+import { RouterType, renderWithMemoryRouter } from '@/presentation/test'
 import { AccountModel } from '@/domain/models'
 import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
-import { LoadSurveyResultSpy, SaveSurveyResultSpy, mockAccountModel, mockSurveyResultModel } from '@/domain/test'
+import { LoadSurveyResultSpy, SaveSurveyResultSpy, mockSurveyResultModel } from '@/domain/test'
 
-type Router = ReturnType<typeof createMemoryRouter>
 type SutTypes = {
   loadSurveyResultSpy: LoadSurveyResultSpy
   saveSurveyResultSpy: SaveSurveyResultSpy
   setCurrentAccountMock: (account: AccountModel) => void
-  router: Router
+  router: RouterType
 }
 type SutParams = {
   loadSurveyResultSpy?: LoadSurveyResultSpy
   saveSurveyResultSpy?: SaveSurveyResultSpy
 }
+type MakeRouterParams = {
+  loadSurveyResultSpy: LoadSurveyResultSpy
+  saveSurveyResultSpy: SaveSurveyResultSpy
+}
 
-const makeSut = ({ loadSurveyResultSpy = new LoadSurveyResultSpy(), saveSurveyResultSpy = new SaveSurveyResultSpy() }: SutParams = {}): SutTypes => {
+const makeRouter = ({ loadSurveyResultSpy, saveSurveyResultSpy }: MakeRouterParams): RouterType => {
   const routes: RouteObject[] = [{
     path: '/',
     element: <h2>Home</h2>
@@ -32,18 +34,14 @@ const makeSut = ({ loadSurveyResultSpy = new LoadSurveyResultSpy(), saveSurveyRe
     path: '/surveys',
     element: <SurveyResult loadSurveyResult={loadSurveyResultSpy} saveSurveyResult={saveSurveyResultSpy} />
   }]
-  const router = createMemoryRouter(routes, {
+  return createMemoryRouter(routes, {
     initialEntries: ['/login', '/', '/surveys'],
     initialIndex: 2
   })
-  const setCurrentAccountMock = jest.fn()
-  const mockedState = { setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }
-  render(
-    <RecoilRoot initializeState={({ set }) => { set(currentAccountState, mockedState) }}>
-      <RouterProvider router={router} />
-    </RecoilRoot>
-  )
-
+}
+const makeSut = ({ loadSurveyResultSpy = new LoadSurveyResultSpy(), saveSurveyResultSpy = new SaveSurveyResultSpy() }: SutParams = {}): SutTypes => {
+  const router = makeRouter({ loadSurveyResultSpy, saveSurveyResultSpy })
+  const { setCurrentAccountMock } = renderWithMemoryRouter({ router })
   return {
     loadSurveyResultSpy,
     saveSurveyResultSpy,

@@ -1,18 +1,21 @@
 import React from 'react'
-import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { RouteObject, createMemoryRouter } from 'react-router-dom'
+import { fireEvent, screen, waitFor } from '@testing-library/react'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyItem } from '@/presentation/pages/survey-list/components'
 import { IconName } from '@/presentation/components'
+import { RouterType, renderWithMemoryRouter } from '@/presentation/test'
 import { mockSurveyModel } from '@/domain/test'
 import { LoadSurveyList } from '@/domain/usecases'
 
-type Router = ReturnType<typeof createMemoryRouter>
 type SutTypes = {
-  router: Router
+  router: RouterType
+}
+type MakeRouterParams = {
+  survey: LoadSurveyList.Model
 }
 
-const makeSut = (survey: LoadSurveyList.Model): SutTypes => {
+const makeRouter = ({ survey }: MakeRouterParams): RouterType => {
   const routes: RouteObject[] = [{
     path: '/',
     element: <SurveyItem survey={survey} />
@@ -20,11 +23,14 @@ const makeSut = (survey: LoadSurveyList.Model): SutTypes => {
     path: 'surveys/:id',
     element: <h2>Survey Result</h2>
   }]
-  const router = createMemoryRouter(routes, {
+  return createMemoryRouter(routes, {
     initialEntries: ['/'],
     initialIndex: 0
   })
-  render(<RouterProvider router={router} />)
+}
+const makeSut = (survey: LoadSurveyList.Model): SutTypes => {
+  const router = makeRouter({ survey })
+  renderWithMemoryRouter({ router })
   return {
     router
   }

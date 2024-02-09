@@ -1,23 +1,23 @@
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom'
-import { RecoilRoot } from 'recoil'
+import { fireEvent, screen, waitFor } from '@testing-library/react'
+import { RouteObject, createMemoryRouter } from 'react-router-dom'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyList } from '@/presentation/pages'
-import { currentAccountState } from '@/presentation/components'
+import { RouterType, renderWithMemoryRouter } from '@/presentation/test'
 import { AccountModel } from '@/domain/models'
 import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
-import { LoadSurveyListSpy, mockAccountModel } from '@/domain/test'
-
-type Router = ReturnType<typeof createMemoryRouter>
+import { LoadSurveyListSpy } from '@/domain/test'
 
 type SutTypes = {
   loadSurveyListSpy: LoadSurveyListSpy
   setCurrentAccountMock: (account: AccountModel) => void
-  router: Router
+  router: RouterType
+}
+type MakeRouterParams = {
+  loadSurveyListSpy: LoadSurveyListSpy
 }
 
-const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
+const makeRouter = ({ loadSurveyListSpy }: MakeRouterParams): RouterType => {
   const routes: RouteObject[] = [{
     path: '/',
     element: <SurveyList loadSurveyList={loadSurveyListSpy} />
@@ -25,17 +25,14 @@ const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
     path: '/login',
     element: <h2>Login</h2>
   }]
-  const router = createMemoryRouter(routes, {
+  return createMemoryRouter(routes, {
     initialEntries: ['/'],
     initialIndex: 0
   })
-  const setCurrentAccountMock = jest.fn()
-  const mockedState = { setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }
-  render(
-    <RecoilRoot initializeState={({ set }) => { set(currentAccountState, mockedState) }}>
-      <RouterProvider router={router} />
-    </RecoilRoot>
-  )
+}
+const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
+  const router = makeRouter({ loadSurveyListSpy })
+  const { setCurrentAccountMock } = renderWithMemoryRouter({ router })
   return {
     loadSurveyListSpy,
     router,

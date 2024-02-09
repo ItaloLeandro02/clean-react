@@ -1,33 +1,28 @@
 import React from 'react'
-import { RouteObject, createMemoryRouter, RouterProvider } from 'react-router-dom'
-import { render, fireEvent, waitFor, screen } from '@testing-library/react'
-import { RecoilRoot } from 'recoil'
+import { RouteObject, createMemoryRouter } from 'react-router-dom'
+import { fireEvent, waitFor, screen } from '@testing-library/react'
 import { faker } from '@faker-js/faker'
 import { disableFetchMocks, enableFetchMocks } from 'jest-fetch-mock'
 import { SignUp } from '@/presentation/pages'
-import { currentAccountState } from '@/presentation/components'
-import { Helper, ValidationStub } from '@/presentation/test'
+import { Helper, RouterType, ValidationStub, renderWithMemoryRouter } from '@/presentation/test'
 import { AddAccount } from '@/domain/usecases'
 import { EmailInUseError } from '@/domain/errors'
-import { AddAccountSpy, mockAccountModel } from '@/domain/test'
-
-type Router = ReturnType<typeof createMemoryRouter>
+import { AddAccountSpy } from '@/domain/test'
 
 type SutTypes = {
   addAccountSpy: AddAccountSpy
   setCurrentAccountMock: (account: AddAccount.Model) => void
-  router: Router
+  router: RouterType
 }
-
 type SutParams = {
   validationError: string
 }
+type MakeRouterParams = {
+  validationStub: ValidationStub
+  addAccountSpy: AddAccountSpy
+}
 
-const makeSut = (params?: SutParams): SutTypes => {
-  const validationStub = new ValidationStub()
-  validationStub.errorMessage = params?.validationError
-  const addAccountSpy = new AddAccountSpy()
-  const setCurrentAccountMock = jest.fn()
+const makeRouter = ({ validationStub, addAccountSpy }: MakeRouterParams): RouterType => {
   const routes: RouteObject[] = [
     {
       path: '/',
@@ -46,17 +41,17 @@ const makeSut = (params?: SutParams): SutTypes => {
       element: <h2>Login page</h2>
     }
   ]
-  const router = createMemoryRouter(routes, {
+  return createMemoryRouter(routes, {
     initialEntries: ['/signup'],
     initialIndex: 0
   })
-  const mockedState = { setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }
-  render(
-    <RecoilRoot initializeState={({ set }) => { set(currentAccountState, mockedState) }}>
-      <RouterProvider router={router} />
-    </RecoilRoot>
-  )
-
+}
+const makeSut = (params?: SutParams): SutTypes => {
+  const validationStub = new ValidationStub()
+  validationStub.errorMessage = params?.validationError
+  const addAccountSpy = new AddAccountSpy()
+  const router = makeRouter({ validationStub, addAccountSpy })
+  const { setCurrentAccountMock } = renderWithMemoryRouter({ router })
   return {
     addAccountSpy,
     setCurrentAccountMock,
