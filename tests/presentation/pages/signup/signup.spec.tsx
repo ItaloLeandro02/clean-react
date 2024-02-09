@@ -4,10 +4,10 @@ import { fireEvent, waitFor, screen } from '@testing-library/react'
 import { faker } from '@faker-js/faker'
 import { disableFetchMocks, enableFetchMocks } from 'jest-fetch-mock'
 import { SignUp } from '@/presentation/pages'
-import { Helper, RouterType, ValidationStub, renderWithMemoryRouter } from '@/presentation/test'
 import { AddAccount } from '@/domain/usecases'
 import { EmailInUseError } from '@/domain/errors'
-import { AddAccountSpy } from '@/domain/test'
+import { Helper, RouterType, ValidationStub, renderWithMemoryRouter } from '@/tests/presentation/mocks'
+import { AddAccountSpy } from '@/tests/domain/mocks'
 
 type SutTypes = {
   addAccountSpy: AddAccountSpy

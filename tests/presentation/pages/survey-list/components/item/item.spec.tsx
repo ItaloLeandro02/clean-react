@@ -4,9 +4,9 @@ import { fireEvent, screen, waitFor } from '@testing-library/react'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyItem } from '@/presentation/pages/survey-list/components'
 import { IconName } from '@/presentation/components'
-import { RouterType, renderWithMemoryRouter } from '@/presentation/test'
-import { mockSurveyModel } from '@/domain/test'
 import { LoadSurveyList } from '@/domain/usecases'
+import { RouterType, renderWithMemoryRouter } from '@/tests/presentation/mocks'
+import { mockSurveyModel } from '@/tests/domain/mocks'
 
 type SutTypes = {
   router: RouterType

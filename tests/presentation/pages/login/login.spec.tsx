@@ -4,10 +4,10 @@ import { RouteObject, createMemoryRouter } from 'react-router-dom'
 import { faker } from '@faker-js/faker'
 import { enableFetchMocks, disableFetchMocks } from 'jest-fetch-mock'
 import { Login } from '@/presentation/pages'
-import { ValidationStub, Helper, renderWithMemoryRouter, RouterType } from '@/presentation/test'
 import { Authentication } from '@/domain/usecases'
 import { InvalidCredentialsError } from '@/domain/errors'
-import { AuthenticationSpy } from '@/domain/test'
+import { ValidationStub, Helper, renderWithMemoryRouter, RouterType } from '@/tests/presentation/mocks'
+import { AuthenticationSpy } from '@/tests/domain/mocks'
 
 type SutTypes = {
   authenticationSpy: AuthenticationSpy

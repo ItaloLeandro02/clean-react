@@ -3,8 +3,8 @@ import { cleanup } from '@testing-library/react'
 import { RouteObject, createMemoryRouter } from 'react-router-dom'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { PrivateRoute } from '@/presentation/components'
-import { RouterType, renderWithMemoryRouter } from '@/presentation/test'
-import { mockAccountModel } from '@/domain/test'
+import { RouterType, renderWithMemoryRouter } from '@/tests/presentation/mocks'
+import { mockAccountModel } from '@/tests/domain/mocks'
 
 type SutTypes = {
   router: RouterType

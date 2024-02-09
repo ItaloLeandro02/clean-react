@@ -1,6 +1,5 @@
-import { pathsToModuleNameMapper } from 'ts-jest'
+import { JestConfigWithTsJest, pathsToModuleNameMapper } from 'ts-jest'
 import { compilerOptions } from './tsconfig.json'
-import { JestConfigWithTsJest } from 'ts-jest'
 
 const jestConfig: JestConfigWithTsJest = {
   preset: 'ts-jest',
@@ -16,16 +15,16 @@ const jestConfig: JestConfigWithTsJest = {
   ],
   testPathIgnorePatterns: [
     '<rootDir>/node_modules',
-    '<rootDir>/src/main/test/cypress',
+    '<rootDir>/tests/e2e/cypress',
   ],
   setupFilesAfterEnv: ['<rootDir>/src/main/config/jest-setup.ts'],
   coverageDirectory: 'coverage',
   testEnvironment: 'jest-environment-jsdom',
-  modulePaths: [compilerOptions.baseUrl],
   moduleNameMapper: {
-    ...pathsToModuleNameMapper(compilerOptions.paths),
+    '@/tests/(.*)': '<rootDir>/tests/$1',
+    '@/(.*)': '<rootDir>/src/$1',
     '\\.scss$': 'identity-obj-proxy'
-  },
+  }
 }
 
 export default jestConfig

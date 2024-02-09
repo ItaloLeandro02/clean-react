@@ -3,10 +3,10 @@ import { fireEvent, screen, waitFor } from '@testing-library/react'
 import { RouteObject, createMemoryRouter } from 'react-router-dom'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyResult } from '@/presentation/pages'
-import { RouterType, renderWithMemoryRouter } from '@/presentation/test'
 import { AccountModel } from '@/domain/models'
 import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
-import { LoadSurveyResultSpy, SaveSurveyResultSpy, mockSurveyResultModel } from '@/domain/test'
+import { RouterType, renderWithMemoryRouter } from '@/tests/presentation/mocks'
+import { LoadSurveyResultSpy, SaveSurveyResultSpy, mockSurveyResultModel } from '@/tests/domain/mocks'
 
 type SutTypes = {
   loadSurveyResultSpy: LoadSurveyResultSpy

@@ -6,7 +6,7 @@ import {
   RequiredFieldValidation,
   ValidationBuilder as sut
 } from '@/validation/validators'
-import { EmailValidatorSpy } from '@/validation/test'
+import { EmailValidatorSpy } from '@/tests/validation/mocks'
 
 describe('ValidationBuilder', () => {
   test('Should return RequiredFieldValidation', () => {

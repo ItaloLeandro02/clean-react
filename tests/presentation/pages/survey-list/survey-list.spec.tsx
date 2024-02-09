@@ -3,10 +3,10 @@ import { fireEvent, screen, waitFor } from '@testing-library/react'
 import { RouteObject, createMemoryRouter } from 'react-router-dom'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { SurveyList } from '@/presentation/pages'
-import { RouterType, renderWithMemoryRouter } from '@/presentation/test'
 import { AccountModel } from '@/domain/models'
 import { AccessDeniedError, UnexpectedError } from '@/domain/errors'
-import { LoadSurveyListSpy } from '@/domain/test'
+import { RouterType, renderWithMemoryRouter } from '@/tests/presentation/mocks'
+import { LoadSurveyListSpy } from '@/tests/domain/mocks'
 
 type SutTypes = {
   loadSurveyListSpy: LoadSurveyListSpy

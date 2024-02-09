@@ -3,8 +3,8 @@ import { render } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { RecoilRoot } from 'recoil'
 import { currentAccountState } from '@/presentation/components'
-import { mockAccountModel } from '@/domain/test'
 import { AccountModel } from '@/domain/models'
+import { mockAccountModel } from '@/tests/domain/mocks'
 
 export type RouterType = ReturnType<typeof createMemoryRouter>
 

@@ -3,9 +3,9 @@ import { RouteObject, createMemoryRouter } from 'react-router-dom'
 import { fireEvent, screen } from '@testing-library/react'
 import { disableFetchMocks } from 'jest-fetch-mock'
 import { Header } from '@/presentation/components'
-import { RouterType, renderWithMemoryRouter } from '@/presentation/test'
 import { AccountModel } from '@/domain/models'
-import { mockAccountModel } from '@/domain/test'
+import { RouterType, renderWithMemoryRouter } from '@/tests/presentation/mocks'
+import { mockAccountModel } from '@/tests/domain/mocks'
 
 type Router = ReturnType<typeof createMemoryRouter>
 type SutTypes = {
