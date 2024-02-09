@@ -8,7 +8,7 @@ const mockUnexpectedError = (): void => { Http.mockServerError('POST', path) }
 const mockEmailInUseError = (): void => { Http.mockForbiddenError('POST', path) }
 const mockSuccess = (): void => {
   cy.fixture('account').then((account) => {
-    Http.mockOk('POST', path, account)
+    Http.mockOk('POST', path, account, 'signUpRequest')
   })
 }
 const populateFields = (): void => {
@@ -94,12 +94,13 @@ describe('SignUp', () => {
     mockSuccess()
     populateFields()
     cy.getByTestId('submit').dblclick()
-    Helper.testHttpCallsCount(1)
+    cy.wait('@signUpRequest')
+    cy.get('@signUpRequest.all').should('have.length', 1)
   })
 
   it('Should not call submit if form ins invalid', () => {
     mockSuccess()
     cy.getByTestId('email').type(`${faker.internet.email()}{enter}`)
-    Helper.testHttpCallsCount(0)
+    cy.get('@signUpRequest.all').should('have.length', 0)
   })
 })

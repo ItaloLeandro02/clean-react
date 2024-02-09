@@ -8,7 +8,10 @@ const mockUnexpectedError = (): void => { Http.mockServerError('POST', path) }
 const mockInvalidCredentialsError = (): void => { Http.mockUnauthorizedError('POST', path) }
 const mockSuccess = (): void => {
   cy.fixture('account').then((account) => {
-    Http.mockOk('POST', path, account)
+    Http.mockOk('POST', path, account, 'loginRequest')
+    cy.fixture('survey-list').then((surveys) => {
+      Http.mockOk('GET', 'api/surveys', surveys)
+    })
   })
 }
 const populateFields = (): void => {
@@ -83,12 +86,13 @@ describe('Login', () => {
     mockSuccess()
     populateFields()
     cy.getByTestId('submit').dblclick()
-    Helper.testHttpCallsCount(1)
+    cy.wait('@loginRequest')
+    cy.get('@loginRequest.all').should('have.length', 1)
   })
 
-  it('Should not call submit if form ins invalid', () => {
+  it('Should not call submit if form is invalid', () => {
     mockSuccess()
     cy.getByTestId('email').type(`${faker.internet.email()}{enter}`)
-    Helper.testHttpCallsCount(0)
+    cy.get('@loginRequest.all').should('have.length', 0)
   })
 })
