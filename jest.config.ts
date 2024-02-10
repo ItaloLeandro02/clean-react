@@ -1,5 +1,4 @@
-import { JestConfigWithTsJest, pathsToModuleNameMapper } from 'ts-jest'
-import { compilerOptions } from './tsconfig.json'
+import { JestConfigWithTsJest } from 'ts-jest'
 
 const jestConfig: JestConfigWithTsJest = {
   preset: 'ts-jest',
